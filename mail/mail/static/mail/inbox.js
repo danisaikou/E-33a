@@ -22,6 +22,29 @@ function compose_email() {
   document.querySelector('#compose-body').value = '';
 }
 
+function send_email() {
+  recipients = document.querySelector('#compose-recipients').value; // comma-separated string of users 
+  subject = document.querySelector('#compose-subject').value;
+  body = document.querySelector('#compose-body').value;
+  console.log(recipients);
+
+  // Send e-mail using POST request to /emails route and return status code/ JSON response
+  fetch('/emails', {
+    method: 'POST',
+    body: JSON.stringify({
+        recipients: 'recipients', 
+        subject: 'subject', 
+        body: 'body'
+    })
+  })
+  .then(response => response.json())
+  .then(result => {
+      // Print result
+      console.log(result);
+  });
+}
+
+
 function load_mailbox(mailbox) {
   
   // Show the mailbox and hide other views
