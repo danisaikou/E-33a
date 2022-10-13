@@ -23,9 +23,9 @@ function compose_email() {
 }
 
 function send_email() {
-  recipients = document.querySelector('#compose-recipients').value; // comma-separated string of users 
-  subject = document.querySelector('#compose-subject').value;
-  body = document.querySelector('#compose-body').value;
+  const recipients = document.querySelector('#compose-recipients').value; // comma-separated string of users 
+  const subject = document.querySelector('#compose-subject').value;
+  const body = document.querySelector('#compose-body').value;
   console.log(recipients);
 
   // Send e-mail using POST request to /emails route and return status code/ JSON response
