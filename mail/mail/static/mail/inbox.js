@@ -22,13 +22,42 @@ function compose_email() {
   document.querySelector('#compose-body').value = '';
 }
 
+// Make GET request to /emails/<mailbox> to request mail for a particular mailbox
+//TODO 
+
+// Make GET request to /emails/<email_id> to request email
+function view_email() {
+  fetch(`/emails/${emails}`)
+  .then(response => response.text())
+  .then(text => {
+    console.log(text);
+    document.querySelector('#emails-view').innerHTML = text;
+  });
+}
+
+
+function view_email() {
+  // Show mailbox without detail / composing views 
+  document.querySelector('#emails.view').style.display = "block";
+  document.querySelector('#emails-detail').style.display = "none";
+  document.querySelector('#compose-view').style.display = "none";
+}
+  // Fetch mail 
+  fetch(`/emails/${mailbox}`)
+  .then(response => response.json())
+  .then(emails => {
+    console.log(emails);
+    emails.array.forEach(email => show_email(email, mailbox))
+  });
+
+
 function send_email() {
   const recipients = document.querySelector('#compose-recipients').value; // comma-separated string of users 
   const subject = document.querySelector('#compose-subject').value;
   const body = document.querySelector('#compose-body').value;
   console.log(recipients);
 
-  // Send e-mail using POST request to /emails route and return status code/ JSON response
+  // Send e-mail using POST request to /emails route and return status code/ JSON response passing in values for recip/subj/body
   fetch('/emails', {
     method: 'POST',
     body: JSON.stringify({
@@ -39,11 +68,11 @@ function send_email() {
   })
   .then(response => response.json())
   .then(result => {
-      // Print result
+      // Print result to the console 
       console.log(result);
   });
 }
-
+load_mailbox('sent');
 
 function load_mailbox(mailbox) {
   
