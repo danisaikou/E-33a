@@ -10,20 +10,29 @@ document.addEventListener('DOMContentLoaded', function() {
   
   document.querySelector('#compose').addEventListener('click', compose_email);
 
+  // Listen for when user submits the compose form to send an e-mail 
+  document.querySelector('#compose-form').addEventListener('submit', send_email)
+
   // By default, load the inbox
   load_mailbox('inbox');
 });
 
-function compose_email() {
+function compose_email(reply=false) {
 
   // Show compose view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
 
   // Clear out composition fields
-  document.querySelector('#compose-recipients').value = '';
-  document.querySelector('#compose-subject').value = '';
-  document.querySelector('#compose-body').value = '';
+  if (!reply) {
+    document.querySelector('#compose-recipients').value = '';
+    document.querySelector('#compose-subject').value = '';
+    document.querySelector('#compose-body').value = '';
+} else {
+  subject = `RE: ${subject}`;
+  document.querySelector('#compose-recipients').value = str(recipents);
+
+}
 }
 
 // Make GET request to /emails/<mailbox> to request mail for a particular mailbox
@@ -61,11 +70,12 @@ function send_email() {
   .then(result => {
       // Print result to the console 
       console.log(result);
+      load_email('sent');
   });
   return false;
 }
 
-function load_email(mailbox) {
+function load_mailbox(mailbox) {
   
   // Show the mailbox and hide other views
   document.querySelector('#emails-view').style.display = 'block';
@@ -98,4 +108,21 @@ function compose() {
   }
   document.querySelector('#compose').value = '';
   return;
+}
+
+function reply(type='reply') {
+  let sender;
+  
+  if (type === 'reply') {
+    sender = document.querySelector('#email-sender').innerHTML;
+  }
+  else {
+    sender = '';
+  }
+
+  const subject = document.querySelector('#email-subject').innerHTML;
+  
+  let body = `>>>>>>>>>>>>>>>\n ${document.querySelector('#email-body').innerHTML}\n>>>>>>>>>>>>>>>`;
+
+  compose(true, sender, subject, body);
 }
