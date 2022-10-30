@@ -47,12 +47,18 @@ function load_mailbox(mailbox) {
   fetch(`/emails/${mailbox}`)
   .then(response => response.json())
   .then(emails => {
-    // Print emails
-    console.log(emails);
+    // For each email create div 
+    emails.forEach(one => {
 
-    // ... do something else with emails ...
+      const email = document.createElement('div');
+      email.innerHTML = 'This is the content of the div.';
+      email.addEventListener('click', function() {
+          console.log('This element has been clicked!')
+        });
+      document.querySelector('#emails-view').append(email);
+      })
   });
-}
+  }
 
 function send_email(event) {
   event.preventDefault();
