@@ -34,6 +34,26 @@ function compose_email(reply=false) {
 }
 }
 
+function view_email(id) {
+  // Get individual emails to display using ID 
+  fetch(`/emails/${id}`)
+  .then(response => response.json())
+  .then(email => {
+    // Print email
+    console.log(email);
+    
+    // ... do something else with email ...
+    // Hide things we don't need to look at 
+    document.querySelector('#emails-view').style.display = 'none';
+    document.querySelector('#compose-view').style.display = 'none';
+    document.querySelector('#email-view').style.display = 'block';
+    
+    // HTML the single email view 
+    document.querySelector('#email-view').innerHTML = `mail display`;
+
+});
+}
+
 function load_mailbox(mailbox) {
   
   // Show the mailbox and hide other views
@@ -49,26 +69,27 @@ function load_mailbox(mailbox) {
   .then(emails => {
     // For each email create div 
     emails.forEach(one => {
-
       const email = document.createElement('div');
       email.innerHTML = `
       <strong>${one.timestamp} </strong> |
       <strong>Sender: </strong>${one.sender} |  
-      <strong>Subj: </strong>${one.subject} | 
+      <strong>Subj: </strong>${one.subject} 
+      </label>
       `;
       
-      // Set read emails to grey bkg 
+      // Set read emails to grey bkg
+      email.className = one.read ? 'read': 'new';
+      
       email.addEventListener('click', function() {
-          email.style.id = 'read'
-          console.log('This element has been clicked!')
-        });
-      
-      
+        view_email(one.id)
+      });
+
       document.querySelector('#emails-view').append(email);
-      //email.className = '"list-group-item"';
       })
   });
   }
+
+
 
 function send_email(event) {
   event.preventDefault();
