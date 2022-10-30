@@ -29,36 +29,9 @@ function compose_email(reply=false) {
     document.querySelector('#compose-subject').value = '';
     document.querySelector('#compose-body').value = '';
 } else {
-  subject = `RE: ${subject}`;
-  document.querySelector('#compose-recipients').value = str(recipents);
+  subject = `RE: ${'#compose-subject'}`;
 
 }
-}
-
-
-function send_email(event) {
-  event.preventDefault
-  console.log('is this working? yes');
-  const recipients = document.querySelector('#compose-recipients').value; // comma-separated string of users 
-  const subject = document.querySelector('#compose-subject').value;
-  const body = document.querySelector('#compose-body').value;
-  
-  // Send e-mail using POST request to /emails route and return status code/ JSON response passing in values for recip/subj/body
-  fetch('/emails', {
-    method: 'POST',
-    body: JSON.stringify({
-        recipients: 'recipients', 
-        subject: 'subject', 
-        body: 'body'
-    })
-  })
-  .then(response => response.json())
-  .then(result => {
-      // Print result to the console 
-      console.log(result);
-      load_email('sent');
-  });
-  return false;
 }
 
 function load_mailbox(mailbox) {
@@ -71,3 +44,28 @@ function load_mailbox(mailbox) {
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
 }
 
+function send_email(event) {
+  event.preventDefault
+  console.log('working');
+  
+  const recipients = document.querySelector('#compose-recipients').value; // comma-separated string of users 
+  const subject = document.querySelector('#compose-subject').value;
+  const body = document.querySelector('#compose-body').value;
+  
+  // Send e-mail using POST request to /emails route and return status code/ JSON response passing in values for recip/subj/body
+  fetch('/emails', {
+    method: 'POST',
+    body: JSON.stringify({
+        recipients: recipients, 
+        subject: subject, 
+        body: body
+    })
+  })
+  .then(response => response.json())
+  .then(result => {
+      // Print result to the console 
+      console.log(result);
+      load_mailbox('sent');
+  });
+  return false;
+}
