@@ -1,9 +1,13 @@
+// Run script after content of page fully loaded
 document.addEventListener('DOMContentLoaded', function() {
 
   // Use buttons to toggle between views
   document.querySelector('#inbox').addEventListener('click', () => load_mailbox('inbox'));
+
   document.querySelector('#sent').addEventListener('click', () => load_mailbox('sent'));
+
   document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
+  
   document.querySelector('#compose').addEventListener('click', compose_email);
 
   // By default, load the inbox
@@ -35,27 +39,14 @@ function view_email() {
   });
 }
 
-
-function view_email() {
-  // Show mailbox without detail / composing views 
-  document.querySelector('#emails.view').style.display = "block";
-  document.querySelector('#emails-detail').style.display = "none";
-  document.querySelector('#compose-view').style.display = "none";
-}
-  // Fetch mail 
-  fetch(`/emails/${mailbox}`)
-  .then(response => response.json())
-  .then(emails => {
-    console.log(emails);
-    emails.array.forEach(email => show_email(email, mailbox))
-  });
-
-
 function send_email() {
   const recipients = document.querySelector('#compose-recipients').value; // comma-separated string of users 
   const subject = document.querySelector('#compose-subject').value;
   const body = document.querySelector('#compose-body').value;
+  
   console.log(recipients);
+  console.log(subject);
+  console.log(body);
 
   // Send e-mail using POST request to /emails route and return status code/ JSON response passing in values for recip/subj/body
   fetch('/emails', {
@@ -73,9 +64,8 @@ function send_email() {
   });
   return false;
 }
-load_mailbox('sent');
 
-function load_mailbox(mailbox) {
+function load_email(mailbox) {
   
   // Show the mailbox and hide other views
   document.querySelector('#emails-view').style.display = 'block';
@@ -86,6 +76,26 @@ function load_mailbox(mailbox) {
 
   // Fetch the most recent emails 
   fetch(`/emails/${mailbox}`)
-  
+  .then(response => response.json())
+  .then(emails => {
+    console.log(emails);
+    emails.array.forEach(email => show_email(email, mailbox))
+  });
 
+}
+
+function archive() {
+  return;
+}
+
+function compose() {
+  if document.querySelector('#body').value.length > 0 {
+    // submit 
+    document.querySelector('#send').disabled = false;
+  }
+  else {
+    document.querySelector('#send').disabled = true;
+  }
+  document.querySelector('#compose').value = '';
+  return;
 }
