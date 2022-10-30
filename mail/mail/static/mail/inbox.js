@@ -42,13 +42,23 @@ function load_mailbox(mailbox) {
 
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+
+  // Make a GET request to /emails/inbox, convert response into JSON, and provide the array of emails inside of the variable emails
+  fetch(`/emails/${mailbox}`)
+  .then(response => response.json())
+  .then(emails => {
+    // Print emails
+    console.log(emails);
+
+    // ... do something else with emails ...
+  });
 }
 
 function send_email(event) {
-  event.preventDefault
+  event.preventDefault();
   console.log('working');
   
-  const recipients = document.querySelector('#compose-recipients').value; // comma-separated string of users 
+  const recipients = document.querySelector('#compose-recipients').value; 
   const subject = document.querySelector('#compose-subject').value;
   const body = document.querySelector('#compose-body').value;
   
