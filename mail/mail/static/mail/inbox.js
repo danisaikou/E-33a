@@ -51,11 +51,21 @@ function load_mailbox(mailbox) {
     emails.forEach(one => {
 
       const email = document.createElement('div');
-      email.innerHTML = 'This is the content of the div.';
+      email.innerHTML = `
+      <strong>${one.timestamp} </strong> |
+      <strong>Sender: </strong>${one.sender} |  
+      <strong>Subj: </strong>${one.subject} | 
+      `;
+      
+      // Set read emails to grey bkg 
       email.addEventListener('click', function() {
+          email.style.id = 'read'
           console.log('This element has been clicked!')
         });
+      
+      
       document.querySelector('#emails-view').append(email);
+      //email.className = '"list-group-item"';
       })
   });
   }
