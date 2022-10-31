@@ -164,9 +164,9 @@ function load_mailbox(mailbox) {
 		});
 }
 
-function send_email() {
-	
-  
+function send_email(event) {
+	event.preventDefault();
+	console.log('working');
 
 	document.querySelector('#email-view').style.display = 'none';
 
