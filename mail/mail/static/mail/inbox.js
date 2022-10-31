@@ -23,17 +23,12 @@ function compose_email(reply=false) {
   document.querySelector('#email-view').style.display = 'none';
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
-  
 
   // Clear out composition fields
-  if (!reply) {
-    document.querySelector('#compose-recipients').value = '';
-    document.querySelector('#compose-subject').value = '';
-    document.querySelector('#compose-body').value = '';
-} else {
-  subject = `RE: ${'#compose-subject'}`;
-
-}
+  document.querySelector('#compose-recipients').value = '';
+  document.querySelector('#compose-subject').value = '';
+  document.querySelector('#compose-body').value = '';
+  
 }
 
 function view_email(id) {
@@ -59,31 +54,23 @@ function view_email(id) {
         </tr>
       </thead>
 
-      <tfoot>
-        <tr>
-          <td colspan="1">
-          <div class="links">
-          <button type="button" class="btn btn-primary">Reply</button>
-          <button type="button" class="btn btn-dark">Archive</button>
-          </div>
-          </td>
-        </tr>
-      </tfoot>
-
       <tbody>
         <tr class="table-secondary">
-          <td><strong>From: </strong>${email.sender} 
-          <br> 
-          <strong>To: </strong>${email.recipients}
-          <br>
-          <em>${email.timestamp}</em></td></tr>
-         <tr class="table-email-body">
-      <td><blockquote class="blockquote">${email.body}</blockquote></td></tr>
+          <td>
+          <strong>From: </strong>${email.sender} <br> 
+          <strong>To: </strong>${email.recipients} <br>
+          <em>${email.timestamp}</em>
+          </td>
+        </tr>
+        <tr class="table-email-body">
+          <td>
+            <blockquote class="blockquote">${email.body}</blockquote>
+          </td>
+        </tr>
       </tbody>
-      </tr>
     </table>
     `;
-
+    // Check if not read and udpate when it is read
     if(!email.read) {
       fetch(`/emails/${id}`, {
         method: 'PUT',
@@ -92,8 +79,57 @@ function view_email(id) {
         })
       })
     }
+    // Reply
+    const reply_btn = document.createElement('button');
+    reply_btn.innerHTML = "Reply";
+    reply_btn.className = "btn btn-primary"
+    reply_btn.addEventListener('click', function() {
+      compose_email();
 
-});
+      document.querySelector('#compose-recipients').value = email.sender;
+         
+      document.querySelector('#compose-subject').value = `${email.subject}`.includes("RE:") ? `${email.subject}`: `RE: ${email.subject}`
+      document.querySelector('#compose-body').value = `\n \n >>>>> \n On ${email.timestamp}, ${email.sender} wrote: \n ${email.body}`;
+
+    });
+
+    // Append a button to the bottom of the single email view screen 
+    document.querySelector('#email-view').append(reply_btn);
+
+  
+    // Archive / Unarchive 
+    const archive_btn = document.createElement('button');
+    archive_btn.innerHTML = email.archived ? "Unarchive": "Archive";
+    archive_btn.className = "btn btn-dark"
+    archive_btn.addEventListener('click', function() {
+      console.log('This element has been clicked!');
+
+      // Send a PUT request to /emails/<email_id> to mark an email as archived or unarchived
+      fetch(`/emails/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+            archived: !email.archived
+        })
+      })
+      .then(() => {load_mailbox('inbox')})
+      
+    });
+    // Append a button to the bottom of the single email view screen 
+    document.querySelector('#email-view').append(archive_btn);
+    
+
+    });
+ 
+
+    
+    
+
+    
+
+
+    
+    
+
 }
 
 function load_mailbox(mailbox) {
@@ -131,8 +167,6 @@ function load_mailbox(mailbox) {
       })
   });
   }
-
-
 
 function send_email(event) {
   event.preventDefault();
