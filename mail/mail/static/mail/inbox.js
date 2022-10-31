@@ -52,7 +52,6 @@ function view_email(id) {
           <th><h3>${email.subject}</h3></th>
         </tr>
       </thead>
-
       <tbody>
         <tr class="table-secondary">
           <td>
@@ -81,22 +80,21 @@ function view_email(id) {
 			}
 
 			// Reply moved above archive for button positioning purposes 
+      // Allow user to reply and 
 			const reply_btn = document.createElement('button');
 			reply_btn.innerHTML = "Reply";
 			reply_btn.className = "btn btn-primary";
 			reply_btn.addEventListener('click', function() {
 				compose_email();
 
+        // Auto-populate the recipient (sender), subject with RE, and the original text
 				document.querySelector('#compose-recipients').value = email.sender;
-
 				document.querySelector('#compose-subject').value = `${email.subject}`.includes("RE:") ? `${email.subject}` : `RE: ${email.subject}`;
 				document.querySelector('#compose-body').value = `\n \n >>>>> \n On ${email.timestamp}, ${email.sender} wrote: \n ${email.body}`;
-
 			});
 
-			// Append a button to the bottom of the single email view screen 
+			// Append a reply button to the bottom of the single email view screen 
 			document.querySelector('#email-view').append(reply_btn);
-
 
 			// Archive / Un-archive 
 			const archive_btn = document.createElement('button');
@@ -112,15 +110,15 @@ function view_email(id) {
 							archived: !email.archived
 						})
 					})
+
+          // Send user back to their inbox after they've archived the message
 					.then(() => {
 						load_mailbox('inbox')
 					});
-
 			});
+
 			// Append a button to the bottom of the single email view screen 
 			document.querySelector('#email-view').append(archive_btn);
-
-
 		});
 }
 
@@ -142,20 +140,21 @@ function load_mailbox(mailbox) {
 			emails.forEach(one => {
 				const email = document.createElement('div');
 				email.innerHTML = `
-      <table>
-        <tbody>
-          <tr>
-            <td><strong>${one.timestamp}</strong></td> 
-            <td><strong>From: </strong>${one.sender}</td>
-            <td><strong>Subj: </strong>${one.subject}</td>
-          </tr>
-        </tbody>
-      </table>
-      `;
+        <table>
+          <tbody>
+            <tr>
+              <td width="30%"><strong>${one.timestamp}</strong></td> 
+              <td width="30%"><strong>From: </strong>${one.sender}</td>
+              <td width="30%"><strong>Subj: </strong>${one.subject}</td>
+            </tr>
+          </tbody>
+        </table>
+        `;
 
 				// Set read emails to grey bkg
 				email.className = one.read ? 'read' : 'new';
 
+        // Add event listener when clicking on email to go to 
 				email.addEventListener('click', function() {
 					view_email(one.id);
 				});
@@ -165,9 +164,9 @@ function load_mailbox(mailbox) {
 		});
 }
 
-function send_email(event) {
-	event.preventDefault();
-	console.log('working');
+function send_email() {
+	
+  
 
 	document.querySelector('#email-view').style.display = 'none';
 
