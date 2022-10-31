@@ -20,8 +20,10 @@ document.addEventListener('DOMContentLoaded', function() {
 function compose_email(reply=false) {
 
   // Show compose view and hide other views
+  document.querySelector('#email-view').style.display = 'none';
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
+  
 
   // Clear out composition fields
   if (!reply) {
@@ -49,7 +51,47 @@ function view_email(id) {
     document.querySelector('#email-view').style.display = 'block';
     
     // HTML the single email view 
-    document.querySelector('#email-view').innerHTML = `mail display`;
+    document.querySelector('#email-view').innerHTML = `
+    <table class="email-table">
+      <thead>
+        <tr class="table-light">
+          <th><h3>${email.subject}</h3></th>
+        </tr>
+      </thead>
+
+      <tfoot>
+        <tr>
+          <td colspan="1">
+          <div class="links">
+          <button type="button" class="btn btn-primary">Reply</button>
+          <button type="button" class="btn btn-dark">Archive</button>
+          </div>
+          </td>
+        </tr>
+      </tfoot>
+
+      <tbody>
+        <tr class="table-secondary">
+          <td><strong>From: </strong>${email.sender} 
+          <br> 
+          <strong>To: </strong>${email.recipients}
+          <br>
+          <em>${email.timestamp}</em></td></tr>
+         <tr class="table-email-body">
+      <td><blockquote class="blockquote">${email.body}</blockquote></td></tr>
+      </tbody>
+      </tr>
+    </table>
+    `;
+
+    if(!email.read) {
+      fetch(`/emails/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+            read: true
+        })
+      })
+    }
 
 });
 }
@@ -59,6 +101,7 @@ function load_mailbox(mailbox) {
   // Show the mailbox and hide other views
   document.querySelector('#emails-view').style.display = 'block';
   document.querySelector('#compose-view').style.display = 'none';
+  document.querySelector('#email-view').style.display = 'none';
 
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
@@ -95,6 +138,8 @@ function send_email(event) {
   event.preventDefault();
   console.log('working');
   
+  document.querySelector('#email-view').style.display = 'none';
+
   const recipients = document.querySelector('#compose-recipients').value; 
   const subject = document.querySelector('#compose-subject').value;
   const body = document.querySelector('#compose-body').value;

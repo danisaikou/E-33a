@@ -9,3 +9,14 @@ textarea {
 .new {
     background-color: #ffffff;
 }
+
+table {
+    width: 100%;
+    border-collapse: separate; 
+
+}
+
+th, td { 
+    border-radius: 10px;
+}
+
