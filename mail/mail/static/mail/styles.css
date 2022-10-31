@@ -3,20 +3,43 @@ textarea {
 }
 
 .read {
-    background-color: #a7a9ac;
+    background-color: #dddddd;
+    border: solid;
+    border-width: 1px 1px;
+    border-radius: 5px;
+    border-color: #eeeeee;
+    font-style: italic;
+    color: #636363;
 }
 
 .new {
     background-color: #ffffff;
+    border: solid; 
+    border-width: 1px 1px;
+    border-radius: 5px;
+    border-color: #0275d8;
+    color: #001884
 }
 
 table {
     width: 100%;
-    border-collapse: separate; 
-
+    border-collapse: separate;
 }
 
 th, td { 
     border-radius: 10px;
+    text-align: left;
+    float: left;
+    padding: 0px 10px 0px 10px;
 }
 
+table .main tr {
+    border: solid;
+    border-width: 1px 0;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    max-height: 200px;
+}

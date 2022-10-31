@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block body %}
-    <h2>{{ request.user.email }}'s Mailbox</h2>
+    <h2>{{ request.user.email }}'s Panda Mailbox</h2>
 
     <button class="btn btn-sm btn-outline-primary" id="inbox">Inbox</button>
     
@@ -37,7 +37,9 @@
             </div>
 
             <textarea class="form-control" id="compose-body" placeholder="Body"></textarea>
-            <input type="submit" class="btn btn-primary"/>
+            <br>
+            <input type="submit" class="btn btn-success"/>
+            <hr>
     
     
         
