@@ -10,6 +10,20 @@ from .models import User
 def index(request):
     return render(request, "network/index.html")
 
+def posts(request): 
+    # Set 10 
+    start = int(request.GET.get("start") or 0)
+    end = int(request.GET.get("end") or (start + 9))
+
+    # Generate list of posts 
+    data = [] 
+    for i in range(start, end + 1):
+        data.append(f"Post #{i}")
+
+    # Return list of posts
+    return JsonResponse({
+        "posts": data
+    })
 
 def login_view(request):
     if request.method == "POST":
