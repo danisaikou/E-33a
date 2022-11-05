@@ -54,11 +54,11 @@ def posts(request):
    # })
 
     # !!!! instead of class to do the paginate: 
-    #post_list = Posts.objects.all().order_by("datetime")
-    #paginator = Paginator(post_list, per_page=10)
-    #paginator.GET.get_page(page)
-    #context = {"page_obj": page_object}
-    #return render(request, "/index.html", context)    
+    post_list = Posts.objects.all().order_by("datetime")
+    paginator = Paginator(post_list, per_page=10)
+    paginator.GET.get_page(page)
+    context = {"page_obj": page_object}
+    return render(request, "/index.html", context)    
 
 def login_view(request):
     if request.method == "POST":
