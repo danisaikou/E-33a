@@ -1,64 +1,75 @@
 from django.contrib.auth import authenticate, login, logout
-from django.db import IntegrityError
+from django.db import IntegrityError, models
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.core.paginator import Paginator
 from django.views.generic import ListView
+from .forms import PostForm
 
 from .models import User, Posts
 
-class AllPostsView(ListView):
+class AllPostsView(ListView, models.Model):
     paginate_by = 10
     model = Posts
-
+    objects = models.Manager()
+    
 
 def index(request):
-    return render(request, "network/index.html")
+    # !!! paginating the index 
+    posts = Posts.objects.all()
+    p = Paginator(posts, 10)
+    page_number = request.GET.get('page')
+    page_obj = p.get_page(page_number)
+    
+    return render(request, "index.html", {
+        "page_obj": page_obj
+    })
 
-def post_api(request):
-    page_number = request.GET.get("page", 1)
-    per_page = request.GET.get("per_page", 10)
-    # startswith = request.GET.get("startswith", "")
-    # posts = Posts.objects.filter(
-    #    name__startswith=startswith
-    # )
-    paginator = Paginator(posts, per_page)
-    page_obj = paginator.get_page(page_number)
-    data = [{"title": p.name} for p in page_obj.object_list]
+def create_post(request):
 
-    payload = {
-        "page": {
-            "current": page_obj.number,
-            "has_next": page_obj.has_next(),
-            "has_previous": page_obj.has_previous(),
-        },
-        "data": data
-    }
-    return JsonResponse(payload)
+    # Generate form from model forms for creating a post, make sure the method is POST (ha)
+    if request.method == "POST":
+        form = PostForm(request.POST)
 
-def posts(request): 
-   # !!!! trying stuff from lecture prob delete: 
-   # Set 10 
-   # start = int(request.GET.get("start") or 0)
-   # end = int(request.GET.get("end") or (start + 9))
+        # Check that form is valid before proceeding 
+        if form.is_valid():
 
-    # Generate list of posts 
-   # data = [] 
-   # for i in range(start, end + 1):
-    #    data.append(f"Post #{i}")
+         # Get user info 
+         poster = form.save(commit=False)
+         poster.user = request.user
+
+         # Save and generate blank so user knows it worked 
+         poster.save()
+         form = PostForm()
+    
+    # If not POST give user form to fill
+    else: 
+        form = PostForm()
+    
+    # To the post page with the form 
+    return render(request, "network/create_post.html", {
+        "form": form
+    })
+
+# def post_api(request):
+#     page_number = request.GET.get("page", 1)
+#     per_page = request.GET.get("per_page", 10)
+#     posts = Posts.objects.all()
+#     paginator = Paginator(posts, per_page)
+#     page_obj = paginator.get_page(page_number)
+#     data = [{"title": p.name} for p in page_obj.object_list]
+
+#     payload = {
+#         "page": {
+#             "current": page_obj.number,
+#             "has_next": page_obj.has_next(),
+#             "has_previous": page_obj.has_previous(),
+#         },
+#         "data": data
+#     }
+#     return JsonResponse(payload)
    
-    # Return list of posts
-    #return JsonResponse({
-     #   "posts": data
-   # })
-
-    # !!!! instead of class to do the paginate: 
-    post_list = Posts.objects.all().order_by("datetime")
-    paginator = Paginator(post_list, per_page=10)
-    paginator.GET.get_page(page)
-    context = {"page_obj": page_object}
-    return render(request, "/index.html", context)    
 
 def login_view(request):
     if request.method == "POST":

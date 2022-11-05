@@ -20,3 +20,4 @@ class Posts():
 
     def __str__(self) -> str:
         return f"{self.title} by {self.user_id} on {self.datetime}"
+    

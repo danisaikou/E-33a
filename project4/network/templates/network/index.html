@@ -1,5 +1,22 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
-    TODO
+    <div class="container">
+        {% for post in page_obj.object_list %}
+            <strong>{{post.title}}</strong>
+            <small>{{post.datetime}}</small>
+            <p>{{post.content}}</p>
+            <hr/>
+        {% endfor %}
+    </div>
+
+    {%if page_obj.has_previous %} 
+            <a href="?page={{page_obj.previous_page_number}}"><</a> 
+        {% endif %}
+        <span>{{page_obj.number}}</span> 
+        
+        {%if page_obj.has_next %} 
+            <a href="?page={{page_obj.next_page_number}}">></a> 
+        {% endif %}
 {% endblock %}
+
