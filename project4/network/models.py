@@ -5,7 +5,6 @@ from django.db import models
 
 
 class User(AbstractUser):
-    followers = models.ManyToManyField('self', blank=True, related_name="following")
     pass
    
     def __str__(self) -> str:

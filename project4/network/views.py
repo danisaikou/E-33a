@@ -6,51 +6,52 @@ from django.urls import reverse
 from django.core.paginator import Paginator
 from django.views.generic import ListView
 from .forms import PostForm
+from django.contrib.auth.decorators import login_required
+
 
 from .models import User, Posts
 
-class AllPostsView(ListView, models.Model):
+class AllPostsView(ListView):
     paginate_by = 10
     model = Posts
     objects = models.Manager()
+
     
 
 def index(request):
-    # !!! paginating the index 
-    posts = Posts.objects.all()
-    p = Paginator(posts, 10)
-    page_number = request.GET.get('page')
-    page_obj = p.get_page(page_number)
-    
+    # Paginating the index 
+    posts = Posts.objects.all().order_by('-datetime')
+    paginator = Paginator(posts, 10)
+    if request.GET.get("page") is not None: 
+        try: 
+            posts = paginator.page(request.GET.get("page"))
+        except: 
+            posts = paginator.page(1)
+    else: 
+        posts = paginator.page(1)
+       
     return render(request, "index.html", {
-        "page_obj": page_obj
-    })
+        "posts": posts
+    }) 
 
 def create_post(request):
 
     # Generate form from model forms for creating a post, make sure the method is POST (ha)
     if request.method == "POST":
-        form = PostForm(request.POST)
+        post = request.POST.get("post")
+        p = Posts()
+        p.post = post
+        p.user = request.user
+        p.save()
+        context = {
+            "post_id": p.id,
+            "username": request.user.username,
+            "timestamp": p.datetime,
+        }
 
-        # Check that form is valid before proceeding 
-        if form.is_valid():
-
-         # Get user info 
-         poster = form.save(commit=False)
-         poster.user = request.user
-
-         # Save and generate blank so user knows it worked 
-         poster.save()
-         form = PostForm()
-    
-    # If not POST give user form to fill
-    else: 
-        form = PostForm()
-    
+        return JsonResponse(context)   
     # To the post page with the form 
-    return render(request, "network/create_post.html", {
-        "form": form
-    })
+    return JsonResponse({})
 
 # def post_api(request):
 #     page_number = request.GET.get("page", 1)
@@ -70,6 +71,21 @@ def create_post(request):
 #     }
 #     return JsonResponse(payload)
    
+@login_required
+def edit_posts(request):
+    if request.method == "POST":
+        id = request.POST.get("id")
+        create_post = request.POST.get("post")
+        try: 
+            post = Posts.objects.get(id=id)
+            if post.user == request.user:
+                post.post = create_post.strip()
+                post.save()
+                return JsonResponse({})
+        except: 
+            return JsonResponse({})
+    return JsonResponse({})
+
 
 def login_view(request):
     if request.method == "POST":
@@ -90,7 +106,7 @@ def login_view(request):
     else:
         return render(request, "network/login.html")
 
-
+@login_required
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("index"))
