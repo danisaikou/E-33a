@@ -1,17 +1,14 @@
-from datetime import datetime
-from email import contentmanager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.urls import reverse
 
 
 class User(AbstractUser):
-    pass
-   
-    def __str__(self) -> str:
+    def __str__(self):
         return self.username
 
-class Posts():
-    user_id = models.ForeignKey("app.Model", verbose_name=("user_id"), on_delete=models.CASCADE)
+class Post(models.Model):
+    user_id = models.ForeignKey(User, verbose_name="user_id", on_delete=models.CASCADE)
     title = models.CharField("title", max_length=150)
     content = models.TextField("content", max_length=260)
     datetime = models.DateTimeField(auto_now_add=True)
