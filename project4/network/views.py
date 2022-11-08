@@ -23,10 +23,10 @@ def index(request):
     paginator = Paginator(posts, 10)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
-       
+
     return render(request, "index.html", {
         "posts": page_obj,
-        "create_post": PostForm(),
+        "form": PostForm(),
         "page_obj": page_obj,
         "page_number": page_number,
     }) 
@@ -35,20 +35,22 @@ def index(request):
 def create_post(request):
 
     if request.method == "POST":
-        id = request.POST.get("id")
-        create_post = request.POST.get("post")
-        if len(create_post) is not 0: 
-            post = Post.objects.get(id=id)
-            post.user_id == request.user_id
-            post.post = create_post()
+        form = PostForm(request.POST or None)
+
+        if form.is_valid():
+
+            post = form.save(commit=False)
+            post.user = request.user
+
             post.save()
-        return JsonResponse({
-            "post_id": post.id,
-            "username": request.user_id,
-            "datetime": post.datetime()
-        })
-    return JsonResponse({})
-                
+            form = PostForm()
+    else: 
+        form = PostForm()
+    
+    return render(request, "index.html", {
+        "form": form
+    })
+            
 
 
    

@@ -18,3 +18,7 @@ button {
 button:hover {
     fill: #a7a9ac;
 }
+
+form {
+  padding: 20px;
+}

@@ -1,10 +1,21 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
+
+    {% if request.user.is_authenticated %}
+
+        <form method="POST" id="PostForm">
+            {% csrf_token %}
+            {{ form.as_p }}
+        <input type="submit" value="Post!" />
+        </form>
+        <hr />
+    {% endif %} 
+            
     <div class="container">
         {% for post in posts %}
-            <strong>{{post.username}} ·</strong>
-            <small>{{post.datetime}}</small>
+            <strong>{{post.user_id}} ·</strong>
+            <small><i>{{post.datetime}}</i></small>
             <p>{{post.content}}</p>
             <strong>{{post.likes}}</strong> Like(s)
             

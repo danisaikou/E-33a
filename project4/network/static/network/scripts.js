@@ -5,61 +5,27 @@ const quantity = 10;
 
 document.addEventListener('DOMContentLoaded', function() {
 
-    // Use buttons for New Post, All Posts, Following, and Log In/Out
-	document.querySelectorAll("div.post").forEach((postNode) => {
-        updateLikes(postNode);
-    });
+    // Use buttons to toggle between views
+	document.querySelector('#all_posts').addEventListener('click', () => load_network ('all_posts'));
+	
+    document.querySelector('#profile').addEventListener('click', () => load_network ('profile'));
+	
+    document.querySelector('#following').addEventListener('click', () => load_network ('following'));
+	
+    document.querySelector('#create').addEventListener('click', create_post);
 
-    // Like button 
-    // Animation src https://mojs.github.io/tutorials/getting-started.html#setup-mo-js-in-your-project
-    // var elem = document.querySelector('.heart');
-    // elem.addEventListener('click', function(e) {
-    //     this.classList.add('hidden');
-    // const heart = new mojs.Shape({
-    //     parent: elem,
-    //     shape: 'heart',
-    //     fill: '#ab0039',
-    //     scale: {0: 1.0},
-    //     easing: 'elastic.out',
-    //     fill: {'pink': 'red'},
-    //     duration: 1000,
-    //     dleay: 300,
-    //     radius: 20 
-    // })
-    // const circle = new mojs.Shape ({
-    //     parent: elem,
-    //     shape: 'circle',
-    //     stroke: '#ab0039',
-    //     strokeWidth: {10: 0},
-    //     fill: 'none',
-    //     scale: {0 : 1},
-    //     radius: 40,
-    //     duration: 400,
-    //     easing: 'cubic.out',
-    //     delay: 300
-    // })
+	// Listen for when user submits the compose form to send an e-mail 
+	document.querySelector('#PostForm').addEventListener('submit', create_post);
 
-    // const burst = new mojs.Burst ({
-    //     parent: elem,
-    //     radius: {4 : 40},
-    //     angle: 45,
-    //     count: 14,
-    //     timeline: {delay: 400},
-    //     children: {
-    //         radius: 3,
-    //         fill: '#ed0552',
-    //         scale: {1 : 0, easing: 'quad.in'},
-    //         pathScale: [.8, null],
-    //         degreeShift: [300, null],
-    //         duration: [500, 700],
-    //         easing: 'quint.out'
-    //     }
-    // })
-    // let timeline = new mojs.Timeline();
-    // timeline.add(heart, circle, burst)
+	// By default, load the inbox
+	load_network('all_posts');
+}); 
 
-    // elem.addEventListener('click', function(e) {
-    //     this.classList.add('hidden');
-    //     timeline.replay()
-    // })
+function load_network() {
+    
+}
+
+function create_post() {
+
+}
 
