@@ -3,6 +3,7 @@ from django.db import models
 from django.urls import reverse
 
 
+
 class User(AbstractUser):
     def __str__(self):
         return self.username
@@ -16,3 +17,15 @@ class Post(models.Model):
     def __str__(self) -> str:
         return f"posted by {self.user_id} on {self.datetime}"
     
+class Profile(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    followers = models.ManyToManyField(User, related_name="followed")
+
+    def serialize(self):
+        return {
+            "profile": self.user.id,
+            "username": self.user.username,
+            "followers": self.followers.count(),
+            "following": self.user.followed.all(),
+
+        }

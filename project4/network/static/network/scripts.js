@@ -21,11 +21,34 @@ document.addEventListener('DOMContentLoaded', function() {
 	load_network('all_posts');
 }); 
 
-function load_network() {
-    
-}
+function load_network(posts) { 
+
+    if (posts.includes("?")) {
+        addon = `&page=${page}`;
+    } 
+    else {
+        document.quertySelector('#profile')
+        addon = `?page=${page}`
+    }
+
+    // Make a GET request to /emails/inbox, convert response into JSON, and provide the array of emails inside of the variable emails
+	console.log(`access ${addon}`);
+    fetch(`/load${addon}`)
+    .then(response => response.json())
+    .then(resposne => {
+        document.getElementById('posts').innerHTML=
+            `
+            <strong>{post.user_id} ·</strong>
+            <small><i>{post.datetime}</i></small>
+            <p>{post.content}</p>
+            <strong>{post.likes}</strong> Like(s)
+            `;
+        resposne.posts.forEach(post => build_post(post));
+            })
+    }
 
 function create_post() {
+
 
 }
 
