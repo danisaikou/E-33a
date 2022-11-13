@@ -3,13 +3,19 @@
 {% block body %}
 
     {% if request.user.is_authenticated %}
-
+        {% comment %}
         <form method="POST" id="PostForm">
             {% csrf_token %}
             {{ form.as_p }}
         <input type="submit" value="Post!" />
         </form>
         <hr />
+        {% endcomment %}
+        <form id = "create_post">
+            New Post
+            <textarea class = "form-control", id ="post_content"></textarea>
+            <button type = "submit" id = "submit_post">
+               Post </button>
     {% endif %} 
             
     <div class="container">
@@ -54,7 +60,6 @@
                 </div>
             </div>
         
-
 
     </div>
 {% endblock %}

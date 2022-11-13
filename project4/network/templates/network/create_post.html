@@ -1,12 +1,15 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
+
    <h2>Create New Post</h2>
-   <form method="POST">
+   
+   <form method="POST" id="create_post">
         {% csrf_token %}
         {{ form.as_p }}
     <input type="submit" value="Post" />
    </form>
-
+   
+   
 {% endblock %}
 

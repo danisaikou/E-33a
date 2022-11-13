@@ -47,7 +47,7 @@ def create_post(request):
     else: 
         form = PostForm()
     
-    return render(request, "index.html", {
+    return render(request, "network/create_post.html", {
         "form": form
     })
             
@@ -55,20 +55,16 @@ def create_post(request):
 
    
 @login_required
-def edit_posts(request):
-    if request.method == "POST":
-        id = request.POST.get("id")
-        create_post = request.POST.get("post")
-        try: 
-            post = Post.objects.get(id=id)
-            if post.user == request.user:
-                post.post = create_post.strip()
-                post.save()
-                return JsonResponse({})
-        except: 
-            return JsonResponse({})
-    return JsonResponse({})
+def edit_posts(request, id):
+    posts = Post.objects.get(id=id)
+    if request.user == posts.user:
+        posts.is_active = False
+        posts.save()
 
+    url = reverse("index", kwargs={
+        "id": id
+    })
+    return HttpResponseRedirect(url)
 
 def login_view(request):
     if request.method == "POST":
