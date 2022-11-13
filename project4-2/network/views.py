@@ -15,7 +15,7 @@ from .forms import PostForm
 
 def index(request):
  
-    Pagination
+    # Pagination
     posts = Post.objects.all().order_by('-datetime')
     paginator = Paginator(posts, 10)
     page_number = request.GET.get("page")

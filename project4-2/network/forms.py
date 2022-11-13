@@ -1,6 +1,6 @@
 from django import forms
 from .models import Post
-from djangoformsetjs.utils import formset_media_js
+
 
 
 class PostForm(forms.ModelForm): 
