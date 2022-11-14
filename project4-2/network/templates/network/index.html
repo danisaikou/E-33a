@@ -5,16 +5,14 @@
     <!-- Test javascript -->
     
     
-    <!-- Confirm user is logged in, if yes form -->
-    {% if request.user.is_authenticated %}
-    
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-    <input type="submit" value="Save" />
-    </form>
-
-    {% endif %}
+    <!-- form -->
+    <div class = "container" id="post_form">
+        <form method = "POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class='btn btn-danger'>Post</button>
+        </form>
+    <hr/>
 
     <!-- Doesn't matter if logged in-->
     <div class="container" id="post_content">

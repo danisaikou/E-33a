@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -21,48 +21,31 @@ def index(request):
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
 
-    
+    # Form stuff
+    form = PostForm()
+
     return render(request, "network/index.html", {
-        "posts": page_obj,
-        "form": PostForm(), 
+        "posts": posts,
+        "form": form, 
         "page_obj": page_obj, 
         "page_number": page_number, 
     })
 
-def posts(request):
-    # Get post ID 
+def post(request):
     form = PostForm()
-    posts = Post.objects.all()
-
-    return render(request, "network/index.html", {
-        "posts": posts,
-        "form": form,
-    })
-
-def create_post(request):
-
-    # Generate form from model forms for creating a new post
-    form = PostForm(request.POST)
 
     # Confirm validity before proceeding
-    if form.is_valid():
-        text = form.cleaned_data('content')
+    if form.is_valid:
+        post.save(commit=False)
+        post.user = request.user
+        post.save()
+
+        text = form.cleaned_data['content']
+        form = PostForm()
+        return redirect('index')
     
-    return render(request, "network/index.html", {
-        "form": form,
-        "text": text, 
-    })
-
-        # Don't save until getting user info
-        # posting = form.save(commit=False)
-        # posting.user = request.user
-        # posting.save()
-
-        # # Save and make it blank so user knows something happened
-
-        # text = form.cleaned_data('posting')
-        # form = PostForm()
-        # return HttpResponseRedirect('index')
+    context = {'form':form, 'text':text}
+    return render(request, 'network/index.html', context)
         
 
 

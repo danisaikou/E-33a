@@ -3,4 +3,14 @@ from django.db import models
 
 
 class User(AbstractUser):
-    pass
+    def __str__(self):
+        return self.username
+
+class Post(models.Model):
+    user = models.ForeignKey(User, verbose_name="user_id", on_delete=models.CASCADE)
+    content = models.TextField("content", max_length=260)
+    datetime = models.DateTimeField(auto_now_add=True)
+    likes = models.IntegerField(default=0)
+
+    def __str__(self) -> str:
+        return f"posted by {self.user} on {self.datetime}"
