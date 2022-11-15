@@ -1,13 +1,11 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.views.generic import ListView
-import json
-
 
 from .models import User, Post
 from .forms import PostForm
@@ -47,6 +45,24 @@ def create_post(request):
 
             return redirect('index')
 
+@login_required
+def like(request, post_id):
+    try:
+        likes = None
+        post = Post.objects.get(id = post_id)
+        if request.user in post.likes.all():
+            post.likes.remove(request.user)
+            likes = False
+        else: 
+            post.likes.add(request.user)
+            likes = True
+        return JsonResponse({
+            'count': post.total_likes(),
+            'likes': likes 
+        })
+    except: 
+        return JsonResponse({'message': 'Error'}, status = 400)
+        
 
 
 
