@@ -12,7 +12,7 @@ class Post(models.Model):
     likes = models.IntegerField(default=0)
 
     def __str__(self) -> str:
-        return f"posted by {self.user_id} on {self.datetime}"
+        return f"posted by {self.user_id.name} on {self.datetime}"
     
 class Profile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
