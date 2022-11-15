@@ -13,38 +13,37 @@ from .forms import PostForm
 
 
 def index(request):
- 
     # Pagination
-    posts = Post.objects.all().order_by('-datetime')
-    paginator = Paginator(posts, 10)
-    page_number = request.GET.get("page")
-    page_obj = paginator.get_page(page_number)
+        posts = Post.objects.all().order_by('-datetime')
+        paginator = Paginator(posts, 10)
+        page_number = request.GET.get("page")
+        page_obj = paginator.get_page(page_number)
+        
+        # Form stuff
+        form = PostForm(request.POST or None)
 
-    # Form stuff
-    form = PostForm()
-
-    return render(request, "network/index.html", {
-        "posts": posts,
-        "form": form, 
-        "page_obj": page_obj, 
-        "page_number": page_number, 
-    })
+        return render(request, "network/index.html", {
+            "posts": posts,
+            "form": form, 
+            "page_obj": page_obj, 
+            "page_number": page_number, 
+        })
 
 def post(request):
-    form = PostForm()
+        form = PostForm(request.POST or None)
 
-    # Confirm validity before proceeding
-    if form.is_valid:
-        post.save(commit=False)
-        post.user = request.user
-        post.save()
+        # Confirm validity before proceeding
+        if form.is_valid:
+            post.save(commit=False)
+            post.user = request.user
+            post.save()
 
-        text = form.cleaned_data['content']
-        form = PostForm()
-        return redirect('index')
-    
-    context = {'form':form, 'text':text}
-    return render(request, 'network/index.html', context)
+            text = form.cleaned_data['content']
+            form = PostForm()
+            return redirect('index')
+        
+        context = {'form':form, 'text':text}
+        return render(request, 'network/index.html', context)
         
 
 

@@ -3,17 +3,18 @@
 
     
     <!-- Test javascript -->
-    
+
     
     <!-- form -->
-    <div class = "container" id="post_form">
+    {% if request.user.is_authenticated %}
+    <div class = "container" id="new_post">
         <form method = "POST">
             {% csrf_token %}
             {{ form.as_p }}
             <button type="submit" class='btn btn-danger'>Post</button>
         </form>
     <hr/>
-
+    {% endif %}
     <!-- Doesn't matter if logged in-->
     <div class="container" id="post_content">
         {% for post in posts %}
@@ -55,8 +56,7 @@
     </div>
     
     
-
+{% endblock %}
     
 
-{% endblock %}
 
