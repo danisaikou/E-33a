@@ -1,0 +1,14 @@
+.fa {
+    cursor: pointer;
+    user-select: none;
+  }
+  
+  .fa:hover {
+    color: #df4759;
+  }
+
+  .icon::before {
+    display: inline-block;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+  }
