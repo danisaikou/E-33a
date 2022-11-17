@@ -1,5 +1,5 @@
 from django import forms
-from .models import Post
+from .models import Post, User
 
 
 
@@ -8,5 +8,10 @@ class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         exclude = ("user_id", "datetime", "likes",)
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name',)
 
 

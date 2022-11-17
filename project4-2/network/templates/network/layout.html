@@ -5,7 +5,7 @@
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
-        
+        <link rel="stylesheet" href="{% static 'assets/css/bootstrap.css' %}">
         
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
@@ -32,7 +32,7 @@
               <ul class="navbar-nav mr-auto">
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'profile' %}"><strong>{{ user.username }}</strong></a>
+                        <a class="nav-link" href="{% url 'profile' pk=user.id %}"><strong>{{ user.username }}</strong></a>
                     </li>
                 {% endif %}
                 <li class="nav-item">
@@ -61,6 +61,8 @@
             {% block body %}
             {% endblock %}
         </div>
-        
+        <script src="{% static 'assets/js/bootstrap.js' %}"></script>
+        <script src="{% static 'assets/js/jquery.js' %}"></script>
+        <script src="{% static 'js/jquery.bootstrap.modal.forms.js' %}"></script>
     </body>
 </html>

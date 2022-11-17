@@ -21,7 +21,7 @@
     
     <div class="container" id="post_content">
         {% for post in posts %}
-            <strong>{{post.user_id}} ·</strong>
+            <a href="{% url 'profile' post.user_id.id %}"><strong>{{post.user_id}}</a> ·</strong>
             <small><i>{{post.datetime}}</i></small>
             <p>{{post.content}}</p>
             <strong>{{post.likes}}</strong> Like(s)

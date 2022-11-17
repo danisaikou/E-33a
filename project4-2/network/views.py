@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
@@ -9,7 +9,7 @@ from django.views.generic import View, ListView, DetailView, CreateView, UpdateV
 import json
 
 from .models import User, Post, Profile
-from .forms import PostForm
+from .forms import PostForm, ProfileForm
 
 
 
@@ -18,6 +18,7 @@ def index(request):
     if request.method == 'POST':
         return create_post(request)
 
+    # The form to create a new post 
     form = PostForm()
     # Pagination
     posts = Post.objects.all().order_by('-datetime')
@@ -49,6 +50,7 @@ def create_post(request):
 
 @login_required
 def like(request, pk):
+    # I know this isn't working properly but if I remove it things break worse for some reason
     try:
         likes = None
         post = Post.objects.get(id = pk)
@@ -66,41 +68,31 @@ def like(request, pk):
         return JsonResponse({'message': 'Error'}, status = 400)
 
 @login_required
-def profile(request):
+def profile(request, pk):
     
+    # Get username, following/follower counts, and posts from just the user 
     user = request.user
+    profile = User.objects.get(id=pk)
     posts = Post.objects.filter(user_id=user).order_by('-datetime')
     paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
+    form = ProfileForm()
     
     return render(request, 'network/profile.html', {
         'posts': posts,
         'page_obj': page_obj, 
-        'page_number': page_number, 
+        'page_number': page_number,
+        'form': form,
+        'profile': profile
     })
 
-class ProfileView(View):
-    def get(self, request, pk, *args, **kwargs):
-        profile = Profile.objects.get(pk=pk)
-        user = profile.user
-        posts = Post.objects.filter(user_id=user).order_by('-datetime')
-        followers = profile.followers.all()
-        for follower in followers: 
-            if follower == request.user:
-                following = True
-                break
-            else: 
-                following = False
-        number_of_followers = len(followers)
-        context = {
-            'user': user, 
-            'profile': profile, 
-            'posts': posts,
-            'following': following, 
-            'number_of_followers': number_of_followers
-        }
-        return render(request, 'network/profile.html', context)
+class edit_profile(UpdateView):
+    model = User
+    template_name = 'network/edit_profile.html'
+    fields = ['first_name', 'last_name',]
+    def get_success_url(self):
+        return reverse('profile')
 
 class edit_post(UpdateView):
     model = Post
@@ -110,59 +102,24 @@ class edit_post(UpdateView):
         return reverse('index')
 
 @login_required
+def follow(request, id):
+    if request.method == "POST":
+        profile = Profile.objects.get(id=id)
+        following = request.user.following
+        if profile in following.all():
+            following.remove(profile)
+        else: 
+            following.add(profile)
+    return HttpResponseRedirect(reverse('profile', kwargs={
+        'id':id
+    }))
+
 def following(request):
-    user = request.user
-    posts = Post.objects.filter(user_id=user).order_by('-datetime')
-    paginator = Paginator(posts, 10)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    
-    return render(request, 'network/profile.html', {
-        'posts': posts,
-        'page_obj': page_obj, 
-        'page_number': page_number, 
+    return render(request, "network/following.html", {
+        'following': request.user.following.all(),
     })
 
-# @login_required
-# def edit_post(request, id):
-#     if request.method == 'POST':
-#         form = PostForm(request.POST or None)
 
-#         # Confirm validity before proceeding
-#         if form.is_valid:
-#             post = form.save(commit=False)
-#             post.user_id = request.user
-#             post.save()
-
-#             return redirect('index')
-
-
-
-
-    
-# def edit_post(request, post_id):
-    
-#     # Confirm access is POST or don't let them 
-#     if request.method != 'POST':
-#         return JsonResponse({'error': 'Nope.'}, status=400)
-
-#     # Look for the post in question
-#     try: 
-#         post = Post.objects.get(pk = post_id)
-#     except Post.DoesNotExist:
-#         return JsonResponse({'error': 'Error'}, status=404)
-
-#     # Confirm user is allowed to edit https://www.edureka.co/community/80072/how-to-parse-request-body-from-post-in-django
-#     if request.user == post.user_id:
-#         body_unicode = request.body.decode('utf-8')
-#         body = json.loads(body_unicode)
-#         content = body['content']
-#         # Update post with edited content
-#         Post.objects.filter(pk=post_id).update(content=f'{content}')
-
-#         return JsonResponse({'message': 'Edited.', 'content':content}, status=200)
-#     else: 
-#         return JsonResponse({'error': 'Error.'}, status=400)
 
 # Everything below this was pre-populated, not created by me
 def login_view(request):

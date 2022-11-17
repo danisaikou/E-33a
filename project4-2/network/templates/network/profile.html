@@ -2,10 +2,35 @@
 {% load static %}
 
 {% block body %}
+
+
 <p class="text-center">
-    <h2>{{ user.username }}</h2>
+    <h2>{{ profile.username }} </h2>
+    <i>{{ profile.first_name }} {{ profile.last_name }}</i>
+    {% if user.username == profile.username %}
+        <a href="{% url 'edit_profile' user.id %}" data-id="{{ user.id }}" id="edit_{{ user.id }}">Edit</a>
+    {% else %}
+    
+    <form method="POST" action="{% url 'following' %}">
+        {% csrf_token%}
+        {% if profile in request.user.following.all %}
+            <input class="btn btn-warning" type="submit" value="Unfollow"></input>
+        {% else %}
+            <input class="btn btn-success" type="submit" value="Follow"></input>
+        {% endif %}
+    </form>
+
+    {% endif %}
+    <br>
+    <br>
     Following: {{ following }}<br/>
     Followers: {{ number_of_followers }}
+  <hr />
+    
+    
+    
+
+
 </p>
 
 <div class="container" id="post_content">
@@ -15,6 +40,7 @@
         <p>{{post.content}}</p>
         <strong>{{post.likes}}</strong> Like(s)
         <hr />
+        
     {% endfor %}
 </div>
 {% endblock %}

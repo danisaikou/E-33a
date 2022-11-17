@@ -13,7 +13,7 @@ class Post(models.Model):
 
 
     def __str__(self) -> str:
-        return f"{self.id}posted by {self.user_id.name} on {self.datetime}"
+        return f"{self.id}posted by {self.user_id.name} on {self.datetime} - {self.user_id}"
     
 class Profile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
