@@ -2,13 +2,19 @@
     cursor: pointer;
     user-select: none;
   }
-  
-  .fa:hover {
+
+.fa:hover {
     color: #df4759;
   }
 
-  .icon::before {
+.icon::before {
     display: inline-block;
     text-rendering: auto;
     -webkit-font-smoothing: antialiased;
   }
+
+.center {
+  margin: auto;
+  width: 50%;
+  padding: 10px;
+}

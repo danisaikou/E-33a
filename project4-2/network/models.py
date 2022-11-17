@@ -11,18 +11,21 @@ class Post(models.Model):
     datetime = models.DateTimeField(auto_now_add=True)
     likes = models.IntegerField(default=0)
 
+
     def __str__(self) -> str:
         return f"posted by {self.user_id.name} on {self.datetime}"
     
 class Profile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    followers = models.ManyToManyField(User, related_name="followed")
+    followers = models.ManyToManyField(User, blank=True, default=0, related_name="followed")
+    following = models.ManyToManyField(User, blank = True, default=0, related_name="following")
 
     def serialize(self):
         return {
             "profile": self.user.id,
             "username": self.user.username,
             "followers": self.followers.count(),
-            "following": self.user.followed.all(),
-
+            "following": self.following.all(),
         }
+    def __str__(self):
+        return self.user.username 

@@ -1,0 +1,35 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+    <h2>Following</h2>
+    <table id="main">
+        <tr>
+            <th>Username</th>
+            <th>Posts</th>
+        </tr>
+        
+        {% for post in posts %}
+        <tr>
+            <strong>{{post.user_id}} ·</strong>
+            <small><i>{{post.datetime}}</i></small>
+            <p>{{post.content}}</p>
+            <strong>{{post.likes}}</strong> Like(s)
+          
+            
+        {% if user.is_authenticated %}
+
+        
+        <i onclick="like_func(this)" class="fa-solid fa-heart-crack" id="heart"></i>
+        
+        <i style="visibility: hidden; color:#df4759;" class="fa-solid fa-heart" id="heart"></i>
+             <hr/>
+
+        {% endif %}
+        {% endfor %}
+        </tr>
+        {% empty %}
+            <h4>No items on watchlist.</h4>
+        {% endfor %}
+    </table>
+    <ul>
+{% endblock %}

@@ -5,7 +5,8 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.views.generic import ListView
+from django.views.generic import ListView, UpdateView
+import json
 
 from .models import User, Post
 from .forms import PostForm
@@ -62,9 +63,46 @@ def like(request, post_id):
         })
     except: 
         return JsonResponse({'message': 'Error'}, status = 400)
-        
 
+@login_required
+def profile(request):
+    
+    user = request.user
+    posts = Post.objects.filter(user_id=user).order_by('-datetime')
+    paginator = Paginator(posts, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    return render(request, 'network/profile.html', {
+        'posts': posts,
+        'page_obj': page_obj, 
+        'page_number': page_number, 
+    })
 
+@login_required
+def edit_post(request, post_id):
+    
+    # Confirm access is POST or don't let them 
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Nope.'}, status=400)
+
+    # Look for the post in question
+    try: 
+        post = Post.objects.get(pk = post_id)
+    except Post.DoesNotExist:
+        return JsonResponse({'error': 'Error'}, status=404)
+
+    # Confirm user is allowed to edit https://www.edureka.co/community/80072/how-to-parse-request-body-from-post-in-django
+    if request.user == post.user_id:
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        content = body['content']
+        # Update post with edited content
+        Post.objects.filter(pk=post_id).update(content=f'{content}')
+
+        return JsonResponse({'message': 'Edited.', 'content':content}, status=200)
+    else: 
+        return JsonResponse({'error': 'Error.'}, status=400)
 
 # Everything below this was pre-populated, not created by me
 def login_view(request):

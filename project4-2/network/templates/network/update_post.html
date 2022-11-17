@@ -9,10 +9,10 @@
     <!-- form -->
     {% if user.is_authenticated %}
     <div class = "container">
-        <form method = "POST" action ="{% url 'create_post' %}" id = "new_post">
+        <form method = "POST" id = "update_post">
             {% csrf_token %}
             {{ form.as_p }}
-            <button type="submit" class='btn btn-danger'>Post</button>
+            <button type="submit" class='btn btn-danger'>Edit</button>
         </form>
     <hr/>
     {% endif %}
