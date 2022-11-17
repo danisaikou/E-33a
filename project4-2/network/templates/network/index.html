@@ -12,7 +12,7 @@
         <form method = "POST" action ="{% url 'create_post' %}" id = "new_post">
             {% csrf_token %}
             {{ form.as_p }}
-            <button type="submit" class='btn btn-danger'>Post</button>
+            <button type="submit", name="post_id", value="{{ post.id}}", class='btn btn-danger'>Post</button>
         </form>
     <hr/>
     {% endif %}
@@ -28,13 +28,13 @@
           
             
         {% if user.is_authenticated %}
-        
-        <i onclick="like_func(this)" class="fa-solid fa-heart-crack" id="heart"></i>
-        
-        <i style="visibility: hidden; color:#df4759;" class="fa-solid fa-heart" id="heart"></i>
+      
+            <button type="submit", name="post_id", value="{{post.id}}", class="btn btn-sm"><i onclick="like_func(this)" class="fa-solid fa-heart-crack" id="heart"></i></button>
+
+            <i style="visibility: hidden; color:#df4759;" class="fa-solid fa-heart" id="heart"></i>
 
         {% if user == post.user_id %}
-        <a href="javascript:void(0)" data-id="{{ post.id }}" id="edit_{{ post.id }}">Edit</a>
+        <a href="{% url 'edit_post' post.id %}" data-id="{{ post.id }}" id="edit_{{ post.id }}">Edit</a>
         {% endif %}
         
 

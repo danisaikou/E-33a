@@ -1,0 +1,25 @@
+{% extends "network/layout.html" %}
+{% load static %}
+{% block body %}
+
+    
+    <!-- Test javascript -->
+    
+    
+    <!-- form -->
+    {% if user.is_authenticated %}
+    <div class = "container">
+        <form method = "POST" id = "update_post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class='btn btn-danger'>Edit</button>
+        </form>
+    <hr/>
+    {% endif %}
+    
+   
+    
+{% endblock %}
+<script src='{% static 'network/scripts.js' %}'></script>
+
+

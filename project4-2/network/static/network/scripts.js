@@ -1,14 +1,13 @@
-document.addEventListener('DOMContentLoaded', function() {
 
-    like = document.querySelectorAll('.liked');
-    like.forEach((element) => {
-        like_func(element);
-    });
+like = document.querySelectorAll('.liked');
+like.forEach((element) => {
+    like_func(element);
+});
 
-    function like_func(x) {
-        x.classList.toggle("fa-heart").css('color','#df4759');
-    }
+function like_func(x) {
+    x.classList.toggle("fa-heart").css('color','#df4759');
 }
+
 // Edit
 // LIsten for clicks
 // document.addEventListener('click', event => {
@@ -57,4 +56,3 @@ document.addEventListener('DOMContentLoaded', function() {
 
 //         }
 //     })
-// })

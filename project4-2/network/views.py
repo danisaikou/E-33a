@@ -1,15 +1,16 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.views.generic import ListView, UpdateView
+from django.views.generic import View, ListView, DetailView, CreateView, UpdateView
 import json
 
-from .models import User, Post
+from .models import User, Post, Profile
 from .forms import PostForm
+
 
 
 def index(request):
@@ -47,10 +48,10 @@ def create_post(request):
             return redirect('index')
 
 @login_required
-def like(request, post_id):
+def like(request, pk):
     try:
         likes = None
-        post = Post.objects.get(id = post_id)
+        post = Post.objects.get(id = pk)
         if request.user in post.likes.all():
             post.likes.remove(request.user)
             likes = False
@@ -79,30 +80,89 @@ def profile(request):
         'page_number': page_number, 
     })
 
+class ProfileView(View):
+    def get(self, request, pk, *args, **kwargs):
+        profile = Profile.objects.get(pk=pk)
+        user = profile.user
+        posts = Post.objects.filter(user_id=user).order_by('-datetime')
+        followers = profile.followers.all()
+        for follower in followers: 
+            if follower == request.user:
+                following = True
+                break
+            else: 
+                following = False
+        number_of_followers = len(followers)
+        context = {
+            'user': user, 
+            'profile': profile, 
+            'posts': posts,
+            'following': following, 
+            'number_of_followers': number_of_followers
+        }
+        return render(request, 'network/profile.html', context)
+
+class edit_post(UpdateView):
+    model = Post
+    template_name = 'network/edit_post.html'
+    fields = ['content',]
+    def get_success_url(self):
+        return reverse('index')
+
 @login_required
-def edit_post(request, post_id):
+def following(request):
+    user = request.user
+    posts = Post.objects.filter(user_id=user).order_by('-datetime')
+    paginator = Paginator(posts, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     
-    # Confirm access is POST or don't let them 
-    if request.method != 'POST':
-        return JsonResponse({'error': 'Nope.'}, status=400)
+    return render(request, 'network/profile.html', {
+        'posts': posts,
+        'page_obj': page_obj, 
+        'page_number': page_number, 
+    })
 
-    # Look for the post in question
-    try: 
-        post = Post.objects.get(pk = post_id)
-    except Post.DoesNotExist:
-        return JsonResponse({'error': 'Error'}, status=404)
+# @login_required
+# def edit_post(request, id):
+#     if request.method == 'POST':
+#         form = PostForm(request.POST or None)
 
-    # Confirm user is allowed to edit https://www.edureka.co/community/80072/how-to-parse-request-body-from-post-in-django
-    if request.user == post.user_id:
-        body_unicode = request.body.decode('utf-8')
-        body = json.loads(body_unicode)
-        content = body['content']
-        # Update post with edited content
-        Post.objects.filter(pk=post_id).update(content=f'{content}')
+#         # Confirm validity before proceeding
+#         if form.is_valid:
+#             post = form.save(commit=False)
+#             post.user_id = request.user
+#             post.save()
 
-        return JsonResponse({'message': 'Edited.', 'content':content}, status=200)
-    else: 
-        return JsonResponse({'error': 'Error.'}, status=400)
+#             return redirect('index')
+
+
+
+
+    
+# def edit_post(request, post_id):
+    
+#     # Confirm access is POST or don't let them 
+#     if request.method != 'POST':
+#         return JsonResponse({'error': 'Nope.'}, status=400)
+
+#     # Look for the post in question
+#     try: 
+#         post = Post.objects.get(pk = post_id)
+#     except Post.DoesNotExist:
+#         return JsonResponse({'error': 'Error'}, status=404)
+
+#     # Confirm user is allowed to edit https://www.edureka.co/community/80072/how-to-parse-request-body-from-post-in-django
+#     if request.user == post.user_id:
+#         body_unicode = request.body.decode('utf-8')
+#         body = json.loads(body_unicode)
+#         content = body['content']
+#         # Update post with edited content
+#         Post.objects.filter(pk=post_id).update(content=f'{content}')
+
+#         return JsonResponse({'message': 'Edited.', 'content':content}, status=200)
+#     else: 
+#         return JsonResponse({'error': 'Error.'}, status=400)
 
 # Everything below this was pre-populated, not created by me
 def login_view(request):
