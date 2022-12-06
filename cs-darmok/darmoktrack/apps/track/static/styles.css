@@ -4,10 +4,6 @@ body {
     color: #666;
 }
 
-nav {
-    height: 32px;
-}
-
 img {
     height: auto;
     max-width: 100%;
@@ -46,4 +42,18 @@ h3 {
 .btn-darmok {
     color: white !important;
     background-color: #e7006a !important;
+}
+
+
+.nav-logo {
+    z-index: 100;
+    min-height: 100px;
+    vertical-align: middle;
+    background: transparent;
+}
+
+.top-bar {
+    background-color: #e7006a;
+    color: #fff;
+    text-align: center;
 }
