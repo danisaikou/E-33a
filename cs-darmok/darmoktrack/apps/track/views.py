@@ -11,7 +11,15 @@ import json
 from .models import User
 
 
+def index(request):
 
+    # Authenticated users view their inbox
+    if request.user.is_authenticated:
+        return render(request, "index.html")
+
+    # Everyone else is prompted to sign in
+    else:
+        return HttpResponseRedirect(reverse("login"))
 
 # Everything below this adapted from previous assignments 
 def login_view(request):
