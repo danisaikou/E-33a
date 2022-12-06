@@ -1,0 +1,49 @@
+body {
+    font-family: Helvetica, Arial, Lucida, sans-serif;
+    font-size: 14px;
+    color: #666;
+}
+
+nav {
+    height: 32px;
+}
+
+img {
+    height: auto;
+    max-width: 100%;
+}
+
+h1 {
+    font-family: 'Fjalla One', Arial, Helvetica, sans-serif;
+    font-weight: 700;
+    font-size: 3.5em;
+    letter-spacing: 1px;
+    color: #000;
+    padding-bottom: 5px;
+    text-align: center;
+}
+
+h2 {
+    font-family: 'Fjalla One', Arial, Helvetica, sans-serif;
+    font-weight: 700;
+    font-size: 2.5em;
+    letter-spacing: 1px;
+    color: #333;
+    padding-bottom: 3px;
+    text-align: center;
+}
+
+h3 {
+    font-family: 'Fjalla One', Helvetica, Arial, Lucida, sans-serif;
+    font-size: 1.5em;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #e7006a;
+    letter-spacing: 1px;
+    text-align: center;
+}
+
+.btn-darmok {
+    color: white !important;
+    background-color: #e7006a !important;
+}

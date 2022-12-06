@@ -15,7 +15,7 @@ def index(request):
 
     # Authenticated users view their inbox
     if request.user.is_authenticated:
-        return render(request, "index.html")
+        return render(request, "track/index.html")
 
     # Everyone else is prompted to sign in
     else:
