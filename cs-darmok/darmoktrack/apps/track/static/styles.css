@@ -2,12 +2,18 @@ body {
     font-family: Helvetica, Arial, Lucida, sans-serif;
     font-size: 14px;
     color: #666;
+    background-image: 
+    radial-gradient(rgb(222, 222, 222) 19.2%, transparent 21.6%),
+    radial-gradient(rgb(222, 222, 222) 19.2%, transparent 21.6%);
+    background-position: 0px 0px, 36px 36px;
+    background-size: 72px 72px;
+    background-color: rgb(255, 255, 255);
+    
 }
 
 a {
     color: #e7006a;
 }
-
 
 img {
     height: auto;
@@ -49,7 +55,13 @@ h3 {
     background-color: #e7006a !important;
 }
 
+.btn-darmok-white {
+    background-color: #fff !important;
+}
 
+.nav-item {
+    font-weight: bold;
+}
 .nav-logo {
     z-index: 100;
     min-height: 100px;
@@ -77,4 +89,14 @@ footer {
 
 .white {
     color: #fff;
+}
+
+.greeting {
+    color: #e7006a;
+}
+
+.card {
+    margin: 0 auto; 
+    float: none;
+    margin-bottom: 10px;
 }

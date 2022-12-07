@@ -1,25 +1,35 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.views.generic import View, ListView, DetailView, CreateView, UpdateView
+from django.contrib import messages
+
 import json
 
-from .models import User
+from .models import User, Project
 
 
 def index(request):
-
-    # Authenticated users view their inbox
-    if request.user.is_authenticated:
         return render(request, "track/index.html")
 
-    # Everyone else is prompted to sign in
-    else:
+def projects(request):
+
+    # If logged in, see their projects page 
+    if request.user.is_authenticated: 
+        project_manager = get_object_or_404(User, pk=request.project_manager)
+        projects = project_manager.projects.all
+        return render(request, "track/projects.html", {'project_manager': project_manager, 'projects': projects})
+    
+    # Everyone else prompted to login
+    else: 
         return HttpResponseRedirect(reverse("login"))
+
+def create_project(request):
+    return render(request,"track/projects.html")
 
 # Everything below this adapted from previous assignments 
 def login_view(request):
