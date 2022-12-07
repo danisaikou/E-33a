@@ -11,25 +11,38 @@ from django.contrib import messages
 import json
 
 from .models import User, Project
+from .forms import NewProject
 
 
 def index(request):
         return render(request, "track/index.html")
 
 def projects(request):
-
-    # If logged in, see their projects page 
-    if request.user.is_authenticated: 
-        project_manager = get_object_or_404(User, pk=request.project_manager)
-        projects = project_manager.projects.all
-        return render(request, "track/projects.html", {'project_manager': project_manager, 'projects': projects})
-    
-    # Everyone else prompted to login
-    else: 
-        return HttpResponseRedirect(reverse("login"))
+    return render(request, "track/projects.html")
 
 def create_project(request):
-    return render(request,"track/projects.html")
+    
+    #Generate form from model forms for creating a new project, make sure POST
+    if request.method == "POST":
+        form = NewProject(request.POST)
+
+        #Confirm form valid before proceeding 
+        if form.is_valid():
+
+            #Get user info first
+            project = form.save(commit=False)
+            project.user = request.user 
+
+            #Save and generate blank so they know it worked
+            project.save()
+            form = NewProject()
+
+    else: 
+        form = NewProject()
+
+    return render(request, "track/create_project.html", {
+        'form': form
+    })
 
 # Everything below this adapted from previous assignments 
 def login_view(request):

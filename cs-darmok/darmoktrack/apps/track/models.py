@@ -6,7 +6,7 @@ class User(AbstractUser):
         return self.username
 
 class Project(models.Model):
-    project_manager = models.ForeignKey(User, related_name='project_manager', on_delete=models.CASCADE)
+    project_manager = models.ForeignKey(User, related_name='projects', on_delete=models.CASCADE)
     name = models.CharField(max_length=250)
     start = models.DateTimeField(auto_now_add=True)
     customer = models.CharField(max_length=250)

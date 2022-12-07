@@ -1,0 +1,23 @@
+{% extends "track/layout.html" %}
+{% block title %} Create Project | {% endblock %}
+{% load static %}
+{% block body %}
+
+    
+    <!-- Test javascript -->
+    
+    <h1>New Project</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn-darmok">Save Project</button>
+    </form>
+    
+    <!-- Doesn't matter if logged in-->
+    
+    
+    
+{% endblock %}
+<script src='{% static 'network/scripts.js' %}'></script>
+
+
