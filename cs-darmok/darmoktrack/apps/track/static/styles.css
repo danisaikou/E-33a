@@ -4,6 +4,11 @@ body {
     color: #666;
 }
 
+a {
+    color: #e7006a;
+}
+
+
 img {
     height: auto;
     max-width: 100%;
@@ -56,4 +61,20 @@ h3 {
     background-color: #e7006a;
     color: #fff;
     text-align: center;
+    padding: 10px;
+}
+
+footer {
+    background-color: #000;
+    color: #fff;
+    text-align: center;
+}
+
+.foot-bar {
+    background-color: #e7006a;
+    color: #fff;
+}
+
+.white {
+    color: #fff;
 }
