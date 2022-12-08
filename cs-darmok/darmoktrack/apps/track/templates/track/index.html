@@ -6,68 +6,7 @@
 
     
     <!-- Test javascript -->
-    <h1>Active Projects</h1> 
-
-
-    {% if user.is_authenticated %}
-{% for project in projects %}
-        <div class="card w-75">
-            <div class="card-header" id="headingOne"> 
-                <h2 class="card-title mb-0"> 
-                        <a href="{% url 'project' project.id %}">{{ project.customer}} - {{ project.name }}</a>
-                    </h2>
-                    <h3>{% if project.is_active %}
-                        Active
-                        {% else %}
-                        <div class="inactive">
-                            Inactive
-                            </div>
-                        {% endif %}
-                    </h3>
-             
-            </div>
-
-            <div id="collapseOne">
-                <div class="card-body">
-                    <ul><strong>Project Name:</strong> {{ project.name }}</ul>
-                    <ul><strong>Project Manager:</strong> {{ project.project_manager }}</ul>
-                    <ul><strong>Customer:</strong> {{ project.customer }}</ul>
-                    <ul><strong>Budget Hours:</strong> {{ project.budget_hours }} / <strong>Current Hours:</strong> {{ project.budget_hours }}</ul>
-                    <ul><strong>Budget (USD):</strong> ${{ project.budget_dollars }} / <strong>Current Total (USD):</strong> ${{ project.budget_hours|mul:200 }}</ul>
-                    <br>
-                    {% if project.is_active %}
-                        <ul>
-                            <a href="{% url 'edit_project' project.id %}" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Edit</button></a>
-                            <a href="#" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Track</button></a>
-                            <a href="#" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Expenses</button></a>
-                            <a href="#" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Invoice</button></a>
-                        </ul>
-                        {% else %}
-                        <ul>
-                            <button type="button" class="btn btn-darmok" disabled>Edit</button>
-                            <button type="button" class="btn btn-darmok" disabled>Track</button>
-                            <button type="button" class="btn btn-darmok" disabled>Expenses</button>
-                            <a href="#" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Invoice</button></a>                        
-                        </ul>
-                        {% endif %}
-                </div>
-            </div>
-        </div>
-        
-
-        {% empty %}
-        <div class="card w-75">
-            <div class="card-header" id="headingOne"> 
-                <h1 class="card-title mb-0"> 
-                    <button class="btn" data-toggle="collapse" data-target="#collapseOne" aria-expanded="True" aria-controls="collapseOne"> 
-                        <h3>No open projects.</h3> 
-                    </button>
-                </h1>
-            </div>
-{% endfor %}
-</div>
-</div>
-{% endif %}
+    
     <!-- Doesn't matter if logged in-->
     
     

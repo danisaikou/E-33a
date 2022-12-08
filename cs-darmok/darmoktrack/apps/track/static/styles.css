@@ -131,3 +131,8 @@ footer {
 .card-header {
     background-color: #f7f7f7;
 }
+
+#alert {
+    color: red !important;
+    font-weight: bold !important;
+}

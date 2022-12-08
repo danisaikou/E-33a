@@ -21,6 +21,13 @@
                     </div>
 
                     <div class="{% if project.is_active %}card-body{% else %}card-body bg-inactive{% endif %}">
+                        <button type="button" class="btn btn-darmok" id="start-button" onclick="startTimer()">Start Tracking Time</button>
+                        <button type="button" class="btn btn-darmok" id="stop-button" onclick="stopTimer()">Stop Tracking Time</button>
+                        <br>
+                        <div id="time-display"></div>
+                        <br>
+
+
                         <ul><strong>Status:</strong> 
                             {% if project.is_active %}
                             Active
@@ -36,23 +43,65 @@
                         <ul><strong>Budget (USD):</strong> ${{ project.budget_dollars }} / <strong>Current Total (USD):</strong> ${{ project.budget_hours|mul:200 }}</ul>
                         <br>
                         {% if project.is_active %}
-                        <ul><strong>Tasks: </strong>
-                            <ul>
+                        <ul><h3>Tasks: </h3>
+
+                            <form id = "task-form">
+                                <label for="task-input">Enter a new task:</label>
+                                <input type="text" id="task-input" />
+                                <button type="submit" class="btn btn-darmok">Add Task</button>
+                            </form>
+                            <ul id="task-list"></ul>
+                            
                                 {% if not tasks_todo and not tasks_complete %}
                                 No tasks yet.
+                               
                                 {% endif %}
                                 {% if tasks_todo %}
+                                <em>Today is {% now "SHORT_DATE_FORMAT" %}</em>
+                                <table class="table">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th scope="col">Task Owner</th>
+                                            <th scope="col">Description</th>
+                                            <th scope="col">Created</th>
+                                            <th scope="col">Due Date</th>
+                                            <th scope="col">Status</th>
+                                        </tr>
+                                    </thead>
+                                        
                                     {% for task in tasks_todo %}
+                                        <tr>
+                                            <th scope="row">{{ task.task_owner }}</th>
+                                            <td>{{ task.description }}</td>
+                                            <td>{{ task.created|date:"SHORT_DATE_FORMAT" }}</td>
+                                            <td>{{ task.due_date|date:"SHORT_DATE_FORMAT" }}</td>
+                                            {% now "Y-m-d" as todays_date %}{% if todays_date > task.due_date|date:"Y-m-d" %}
+                                            <td id="alert">Past due</id>{% else %}<td>On Time{% endif %}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </table>
+                                    
+                                {% endif %}
+                                <br>
+                                {% if tasks_complete %}
+                                <strong>Completed:</strong>
+                                    {% for task in tasks_complete %}
                                         <li>{{ task.task_owner }}: {{ task.description }}</li>
                                     {% endfor %}
                                 {% endif %}
                             </ul>
                                 <br>
+                                
+
                         <ul>
                             <a href="{% url 'edit_project' project.id %}" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Edit</button></a>
                             <a href="#" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Track</button></a>
                             <a href="#" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Expenses</button></a>
                             <a href="#" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Invoice</button></a>
+
+                            
+
+
                         </ul>
                         {% else %}
                         <ul>
@@ -74,6 +123,53 @@
         
     {% endif %}
 
+<script>
+    // Initialize time clock
+    let time = 0;
+    // Initilaie timer 
+    let timer = null;
+
+    //Start timer
+    function startTimer() {
+        // if not running, start
+        if (!timer) {
+            timer = setInterval(function() {
+                time++;
+                //update display with new time
+                updateTimeDisplay();
+            }, 1000);
+        }
+    }
    
+    function stopTimer() {
+        //if running, stop
+        if (timer) {
+            clearInterval(timer);
+            timer=null;
+        }
+    }
+
+    //update display
+    function updateTimeDisplay() {
+        //get current time in h/m/s
+        let hours = Math.floor(time / 3600);
+        let minutes = Math.floor((time % 3600) / 60 );
+        let seconds = time % 60;
+
+        //format time as stringformat
+        let timeString = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+
+        // update time display with fomratted string
+        document.getElementById("time-display").innerHTML = timeString;
+    }
+
+    function stopTimerAndSaveTime() {
+        // stop the timer
+        stopTimer();
+
+        // send time to server 
+        fetch
+    }
+</script>
 
 {% endblock %}

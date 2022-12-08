@@ -1,5 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.utils import timezone
+from datetime import date
 
 class User(AbstractUser):
     def __str__(self):
@@ -19,7 +21,7 @@ class Project(models.Model):
         ordering = ['-start']
 
     def __str__(self):
-        return f"Project {self.id} - {self.name} managed by {self.project_manager.username}" 
+        return f"Project {self.id} - {self.name} managed by {self.project_manager.username} with {self.time_spent} elapsed"
     
     def inactive(self):
         if self.is_active():
@@ -27,11 +29,12 @@ class Project(models.Model):
         else: 
             return False
 
-    def registered_time(self):
-        return 0
+def default_future():
+        return timezone.now() + timezone.timedelta(days=7)
 
-    def tasks_remaining(self):
-        return 0 # self.tasks.filter(status=Task.TODO).count()
+class TimeClock(models.Model):
+    elapsed_time = models.FloatField()
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
 class ProjectTask(models.Model):
     #Status Options
@@ -50,15 +53,20 @@ class ProjectTask(models.Model):
     task_owner = models.ForeignKey(User, related_name='task_owner', on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=25, choices=CHOICES_STATUS, default=TODO)
+    due_date = models.DateTimeField(default=default_future)
+    
 
     class Meta:
-        ordering = ['-created']
+        ordering = ['due_date']
     
     def __str__(self):
-        return self.description
+        return f"{self.description}: due {self.due_date}"
+
+    @property 
+    def is_past_due(self):
+        return date.today() > {self.due_date}
+
+
     
-    def registered_time(self):
-        return 0
-   
 
 

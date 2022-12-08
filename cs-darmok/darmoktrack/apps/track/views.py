@@ -7,10 +7,13 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.views.generic import View, ListView, DetailView, CreateView, UpdateView
 from django.contrib import messages
+from django.utils import timezone
+import datetime
+import time 
 
 import json
 
-from .models import User, Project, ProjectTask
+from .models import User, Project, ProjectTask, TimeClock
 from .forms import NewProject
 
 
@@ -18,7 +21,6 @@ def index(request):
         return render(request, "track/index.html", {
             "projects": request.user.project_list.filter(is_active=True),
         })
-
 
 def project_list(request):
 
@@ -64,6 +66,7 @@ class edit_project(UpdateView):
         return reverse('projects')
 
 def project(request, id):
+    now = datetime.datetime.now()
     projects = Project.objects.filter(id=id)
 
     if request.method == "POST": 
@@ -85,7 +88,23 @@ def project(request, id):
         "tasks_todo": tasks_todo, 
         "tasks_complete": tasks_complete, 
         "tasks_canceled": tasks_canceled,
+        "now": now,
     })
+
+def time_clock_view(request):
+    if request.method == "POST":
+
+        # Get the elapsed time and project id
+        elapsed_time = request.POST.get("elapsed_time")
+        project_id = request.POST.get("project_id")
+
+        # Save the elapsed time for the project
+        time_clock = TimeClock(elapsed_time=elapsed_time, project_id=project_id)
+        time_clock.save()
+
+        # Return a success response
+        return HttpResponse("Elapsed time saved successfully.")
+
 
 # Everything below this adapted from previous assignments 
 def login_view(request):
