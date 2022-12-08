@@ -10,12 +10,15 @@ from django.contrib import messages
 
 import json
 
-from .models import User, Project
+from .models import User, Project, ProjectTask
 from .forms import NewProject
 
 
 def index(request):
-        return render(request, "track/index.html")
+        return render(request, "track/index.html", {
+            "projects": request.user.project_list.filter(is_active=True),
+        })
+
 
 def project_list(request):
 
@@ -63,9 +66,25 @@ class edit_project(UpdateView):
 def project(request, id):
     projects = Project.objects.filter(id=id)
 
+    if request.method == "POST": 
+        name = request.GET.get('name')
+
+        if name: 
+            task = ProjectTask.objects.create(projects=projects, name=name)
+            messages.info(request, 'Task added.')
+            return redirect('projects:projects', project_id = project.id)
+    
+    tasks_todo = ProjectTask.objects.filter(status=ProjectTask.TODO)
+    tasks_complete = ProjectTask.objects.filter(status=ProjectTask.COMPLETE)
+    tasks_canceled = ProjectTask.objects.filter(status=ProjectTask.CANCELED)
+
+
     return render(request, "track/project.html", {
         "projects": projects, 
         "id": id, 
+        "tasks_todo": tasks_todo, 
+        "tasks_complete": tasks_complete, 
+        "tasks_canceled": tasks_canceled,
     })
 
 # Everything below this adapted from previous assignments 

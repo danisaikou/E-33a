@@ -3,26 +3,28 @@
 {% block title %}Projects | {% endblock %}
 
 {% block body %}
-<h1>Projects</h1> 
+<h1>All Projects</h1> 
 
 {% if user.is_authenticated %}
 {% for project in projects %}
         <div class="card w-75">
-            <div class="card-header" id="headingOne"> 
+            <div class="{% if project.is_active %}card-header{% else %}card-header bg-secondary{% endif %}"> 
                 <h2 class="card-title mb-0"> 
                         <a href="{% url 'project' project.id %}">{{ project.customer}} - {{ project.name }}</a>
                     </h2>
                     <h3>{% if project.is_active %}
                         Active
                         {% else %}
+                        <div class="inactive">
                         Inactive
+                        </div>
                         {% endif %}
                     </h3>
              
             </div>
 
             <div id="collapseOne">
-                <div class="card-body">
+                <div class="{% if project.is_active %}card-body{% else %}card-body bg-inactive{% endif %}">
                     <ul><strong>Project Name:</strong> {{ project.name }}</ul>
                     <ul><strong>Project Manager:</strong> {{ project.project_manager }}</ul>
                     <ul><strong>Customer:</strong> {{ project.customer }}</ul>

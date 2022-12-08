@@ -113,3 +113,21 @@ footer {
     float: none;
     margin-bottom: 10px;
 }
+
+.navbar-brand {
+    font-weight: bold;
+    font-family: 'Fjalla One', Arial, Helvetica, sans-serif;
+}
+
+.inactive {
+    color: #D3D3D3;
+}
+
+.bg-inactive {
+    background-color: black;
+    color: white;
+}
+
+.card-header {
+    background-color: #f7f7f7;
+}
