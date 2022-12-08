@@ -1,5 +1,5 @@
 from django import forms
-from .models import Project
+from .models import Project, ProjectTask
 
 class NewProject(forms.ModelForm):
     class Meta:
@@ -12,3 +12,16 @@ class NewProject(forms.ModelForm):
             'budget_dollars': ('Budget'),
 
         }
+
+class AddTaskForm(forms.ModelForm):
+    class Meta:
+        model = ProjectTask
+        fields =('project', 'description', 'task_owner', 'due_date',)
+        labels = {
+            'project': ('Project'),
+            'description': ('Task Description'),
+            'task_owner': ('Responsible'),
+            'due_date': ('Due Date'),
+        }
+    
+    

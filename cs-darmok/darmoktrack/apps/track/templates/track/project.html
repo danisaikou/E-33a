@@ -45,11 +45,12 @@
                         {% if project.is_active %}
                         <ul><h3>Tasks: </h3>
 
-                            <form id = "task-form">
-                                <label for="task-input">Enter a new task:</label>
-                                <input type="text" id="task-input" />
+                            <form id = "add-task-form" method="POST" action="">
+                                {% csrf_token %}
+                                {{ form.as_p }}
                                 <button type="submit" class="btn btn-darmok">Add Task</button>
                             </form>
+                                
                             <ul id="task-list"></ul>
                             
                                 {% if not tasks_todo and not tasks_complete %}

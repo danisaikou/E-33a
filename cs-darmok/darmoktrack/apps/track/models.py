@@ -21,7 +21,7 @@ class Project(models.Model):
         ordering = ['-start']
 
     def __str__(self):
-        return f"Project {self.id} - {self.name} managed by {self.project_manager.username} with {self.time_spent} elapsed"
+        return f"Project {self.id} - {self.name} managed by {self.project_manager.username}"
     
     def inactive(self):
         if self.is_active():
