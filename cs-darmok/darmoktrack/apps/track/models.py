@@ -13,7 +13,7 @@ class Project(models.Model):
     budget_hours = models.IntegerField(default=0)
     budget_dollars = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
     is_active = models.BooleanField("Active", default=True)
-    projects = models.ManyToManyField(User, blank=True, related_name="project_list")
+    projects = models.ForeignKey(User, blank=True, related_name="project_list", on_delete=models.CASCADE)
 
     class Meta: 
         ordering = ['-start']

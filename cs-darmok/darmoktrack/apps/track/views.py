@@ -26,26 +26,32 @@ def project_list(request):
 @login_required
 def create_project(request):
     
-    #Generate form from model forms for creating a new project, make sure POST
+     # Generate form from model forms for creating a listing, make sure the method is POST
     if request.method == "POST":
         form = NewProject(request.POST)
 
-        #Confirm form valid before proceeding 
+        # Check that the form is valid before proceeding 
         if form.is_valid():
 
-            #Get user info first
-            project = form.save(commit=False)
-            project.project_manager = request.user 
-            project.save()
-
-            return redirect('projects')
-
+            # Don't save the form until getting the user information so that it is stored with the listing
+            proj = form.save(commit=False)
+            proj.projects = request.user
+            proj.project_manager = request.user
+            
+            # Then save it and generate a blank form so the user knows something happened with their input
+            proj.save()
+            form = NewProject()
+    
+    # If it's not POST, give the user the form to fill out 
     else: 
         form = NewProject()
+    
+    # To the listing page with the form 
+    return render(request, "track/create_project.html", {
+        'form': form
+         
+    })
 
-        return render(request, "track/create_project.html", {
-            'form': form
-        })
 
 class edit_project(UpdateView):
     model = Project

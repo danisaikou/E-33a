@@ -24,7 +24,7 @@
             <div id="collapseOne">
                 <div class="card-body">
                     <ul><strong>Project Name:</strong> {{ project.name }}</ul>
-                    <ul><strong>Project Manager:</strong> {{ project.project_manager }}
+                    <ul><strong>Project Manager:</strong> {{ project.project_manager }}</ul>
                     <ul><strong>Customer:</strong> {{ project.customer }}</ul>
                     <ul><strong>Budget Hours:</strong> {{ project.budget_hours }} / <strong>Current Hours:</strong> {{ project.budget_hours }}</ul>
                     <ul><strong>Budget (USD):</strong> ${{ project.budget_dollars }} / <strong>Current Total (USD):</strong> ${{ project.budget_hours|mul:200 }}</ul>
