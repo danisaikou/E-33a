@@ -17,9 +17,13 @@ from .forms import NewProject
 def index(request):
         return render(request, "track/index.html")
 
-def projects(request):
-    return render(request, "track/projects.html")
+def project_list(request):
 
+    return render(request, "track/projects.html", {
+            "projects": request.user.project_list.all(),
+        })
+
+@login_required
 def create_project(request):
     
     #Generate form from model forms for creating a new project, make sure POST
@@ -31,17 +35,31 @@ def create_project(request):
 
             #Get user info first
             project = form.save(commit=False)
-            project.user = request.user 
-
-            #Save and generate blank so they know it worked
+            project.project_manager = request.user 
             project.save()
-            form = NewProject()
+
+            return redirect('projects')
 
     else: 
         form = NewProject()
 
-    return render(request, "track/create_project.html", {
-        'form': form
+        return render(request, "track/create_project.html", {
+            'form': form
+        })
+
+class edit_project(UpdateView):
+    model = Project
+    template_name = "track/edit_project.html"
+    fields = ['name', 'budget_hours', 'budget_dollars',]
+    def get_success_url(self):
+        return reverse('projects')
+
+def project(request, id):
+    projects = Project.objects.filter(id=id)
+
+    return render(request, "track/project.html", {
+        "projects": projects, 
+        "id": id, 
     })
 
 # Everything below this adapted from previous assignments 

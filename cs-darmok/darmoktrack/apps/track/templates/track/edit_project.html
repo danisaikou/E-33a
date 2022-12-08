@@ -1,29 +1,30 @@
 {% extends "track/layout.html" %}
-{% block title %} Create Project | {% endblock %}
+{% block title %} Edit Project | {% endblock %}
 {% load static %}
 {% block body %}
 
     
     <!-- Test javascript -->
     {% load crispy_forms_tags %}  
+
+    {% if user.is_authenticated %}
     <div class="card w-75">
         <div class="card-header" id="headingOne"> 
-            <h1>New Project</h1>
+            <h1>Edit Project</h1>
         </div>
         <div class="card-body">
             <h3>
-    <form method="POST">
+    <form method="POST" id="update_project">
         {% csrf_token %}
-        {{ form.customer|as_crispy_field }}
-        <br>
         {{ form.name|as_crispy_field }}
         <br>
         {{ form.budget_hours|as_crispy_field}} 
         <br>
         {{ form.budget_dollars|as_crispy_field }}
         <br>
-        <button type="submit" class="btn btn-darmok">Save Project</button>
+        <button type="submit" class="btn btn-darmok">Save Updated Project</button>
     </form>
+    {% endif %}
 </h3>
 </div>
 </div>
