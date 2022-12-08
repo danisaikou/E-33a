@@ -23,5 +23,9 @@ class AddTaskForm(forms.ModelForm):
             'task_owner': ('Responsible'),
             'due_date': ('Due Date'),
         }
-    
-    
+
+class UpdateTaskForm(forms.ModelForm):
+    class Meta:
+        model = ProjectTask
+        fields =('description', 'task_owner', 'status')
+        

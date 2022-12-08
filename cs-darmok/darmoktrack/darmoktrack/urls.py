@@ -28,6 +28,9 @@ urlpatterns = [
     path("create_project", views.create_project, name="create_project"),
     path("track/edit_project/<int:pk>", views.edit_project.as_view(), name="edit_project"), 
     path("project/<int:id>", views.project, name="project"),
+    path("track/update_task/<int:pk>", views.update_task, name="update_task"), 
+    path('tasks/', views.view_tasks, name='view_tasks'), 
+    path("tasks/<int:pk>/", views.view_task, name="view_task"),
  
 
 ]

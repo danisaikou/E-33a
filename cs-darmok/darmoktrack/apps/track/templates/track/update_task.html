@@ -1,0 +1,12 @@
+{% extends "track/layout.html" %}
+{% block title %} Edit Project | {% endblock %}
+{% load static %}
+{% block body %}
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Update task</button>
+</form>
+
+{% endblock %}

@@ -67,6 +67,7 @@
                                             <th scope="col">Created</th>
                                             <th scope="col">Due Date</th>
                                             <th scope="col">Status</th>
+                                            <th scope="col">Update</th>
                                         </tr>
                                     </thead>
                                         
@@ -78,6 +79,7 @@
                                             <td>{{ task.due_date|date:"SHORT_DATE_FORMAT" }}</td>
                                             {% now "Y-m-d" as todays_date %}{% if todays_date > task.due_date|date:"Y-m-d" %}
                                             <td id="alert">Past due</id>{% else %}<td>On Time{% endif %}</td>
+                                            <td><a href="{% url 'update_task' task.pk %}">Update task</a></td>
                                         </tr>
                                         {% endfor %}
                                     </table>

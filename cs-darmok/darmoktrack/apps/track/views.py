@@ -14,7 +14,7 @@ import time
 import json
 
 from .models import User, Project, ProjectTask, TimeClock
-from .forms import NewProject, AddTaskForm
+from .forms import NewProject, AddTaskForm, UpdateTaskForm
 
 
 def index(request):
@@ -96,7 +96,26 @@ def project(request, id):
         "form": form,
     })
 
+def view_tasks(request):
+    tasks = ProjectTask.objects.all()
+    return render(request, 'track/tasks.html', {'tasks': tasks})
 
+def view_task(request, pk): 
+    task = ProjectTask.objects.get(pk=pk)
+    return render(request, "tasks/task.html", {"task": task})
+
+def update_task(request, pk):
+    task = ProjectTask.objects.get(pk=pk)
+
+    if request.method == 'POST':
+        form = UpdateTaskForm(request.POST, instance=task)
+        if form.is_valid():
+            form.save()
+            return redirect('projects')
+    else:
+        form = UpdateTaskForm(instance=task)
+
+    return render(request, 'track/update_task.html', {'form': form})
 
 def time_clock_view(request):
     if request.method == "POST":
