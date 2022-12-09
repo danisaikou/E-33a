@@ -12,19 +12,52 @@
                 <div class="card col-sm-8">
                     <div class="{% if project.is_active %}card-header{% else %}card-header bg-secondary{% endif %}"> 
                         <h3 class="card-title mb-0"> 
-                            Project {{ project.name }} 
+                            Project: {{ project.name }} 
                             <br>
-                            for {{ project.customer }}
+                            for: {{ project.customer }}
                         </h3>
                     </div>
 
                     <div class="{% if project.is_active %}card-body{% else %}card-body bg-inactive{% endif %}">
+                        
+                        <form action="" method="post">
+                            {% csrf_token %}
+                            
+                            <input type="button" class="btn btn-darmok btn-sm" value="Start Working" onclick="addCurrentTime('start_time')" /> {{ timeform.start_time }}
+
+                            <input type="button" class="btn btn-darmok btn-sm" value="Stop Working" onclick="addCurrentTime('end_time')" /> {{ timeform.end_time }}
+                            <input type="submit" value="Submit" />
+                        </form>
+                        <br>
+                        <br>
+                        <script>
+                        function addCurrentTime(fieldId) {
+                            // Get the current date and time
+                            var currentTime = new Date();
+                        
+                            // Format the date and time as a string
+                            var currentTimeString = currentTime.toLocaleString();
+                        
+                            // Get the form field element with the specified ID
+                            var field = document.getElementById(fieldId);
+                        
+                            // Set the value of the field to the current date and time
+                            field.value = currentTimeString;
+
+                            console.log("Worked")
+                        }
+                        </script>
+                        
+
+
+                       {% comment %}
                         <button type="button" class="btn btn-darmok" id="start-button" onclick="startTimer()">Start Tracking Time</button>
                         <button type="button" class="btn btn-darmok" id="stop-button" onclick="stopTimer()">Stop Tracking Time</button>
                         <br>
                         <div id="time-display"></div>
                         <br>
-
+                        -->
+                        {% endcomment %}
 
                         <ul><strong>Status:</strong> 
                             {% if project.is_active %}

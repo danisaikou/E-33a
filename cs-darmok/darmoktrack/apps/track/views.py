@@ -8,13 +8,12 @@ from django.core.paginator import Paginator
 from django.views.generic import View, ListView, DetailView, CreateView, UpdateView
 from django.contrib import messages
 from django.utils import timezone
-import datetime
-import time 
+from datetime import datetime, timedelta
 
 import json
 
-from .models import User, Project, ProjectTask, TimeClock
-from .forms import NewProject, AddTaskForm, UpdateTaskForm
+from .models import User, Project, ProjectTask, TimeModel
+from .forms import NewProject, AddTaskForm, UpdateTaskForm, TimeForm
 
 
 def index(request):
@@ -55,7 +54,6 @@ def create_project(request):
          
     })
 
-
 class edit_project(UpdateView):
     model = Project
     template_name = "track/edit_project.html"
@@ -64,9 +62,11 @@ class edit_project(UpdateView):
         return reverse('projects')
 
 def project(request, id):
-    now = datetime.datetime.now()
     projects = Project.objects.filter(id=id)
+    project = Project.objects.get(id=id)
+    time_models = project.time_models.all()
     form = AddTaskForm()
+    timeform = TimeForm(initial={'project': project})
 
     if request.method == "POST":
 
@@ -78,6 +78,19 @@ def project(request, id):
             return redirect('project', id=id)
         else: 
             form = AddTaskForm()
+        
+        timeform = TimeForm(request.POST)
+
+        if timeform.is_valid():
+            time_model = TimeModel(
+                start_time=timeform.cleaned_data['start_time'],
+                end_time=timeform.cleaned_data['end_time'],
+            )
+            time_model.save()
+
+            return redirect('project', id=id)
+        else: 
+            timeform = TimeForm()
     
     tasks_todo = ProjectTask.objects.filter(status=ProjectTask.TODO)
     tasks_complete = ProjectTask.objects.filter(status=ProjectTask.COMPLETE)
@@ -90,8 +103,10 @@ def project(request, id):
         "tasks_todo": tasks_todo, 
         "tasks_complete": tasks_complete, 
         "tasks_canceled": tasks_canceled,
-        "now": now,
         "form": form,
+        "timeform": timeform, 
+        "project": project, 
+        "time_models": time_models
     })
 
 
@@ -116,19 +131,48 @@ def update_task(request, pk):
 
     return render(request, 'track/update_task.html', {'form': form})
 
-def time_clock_view(request):
-    if request.method == "POST":
+def update_time(request):
+    # get instance to update
+    time_model = TimeModel.objects.get(id=1)
 
-        # Get the elapsed time and project id
-        elapsed_time = request.POST.get("elapsed_time")
-        project_id = request.POST.get("project_id")
+    # update start and end fields 
+    time_model.start_time = request.POST['start_time']
+    time_model.end_time = request.POST['end_time']
 
-        # Save the elapsed time for the project
-        time_clock = TimeClock(elapsed_time=elapsed_time, project_id=project_id)
-        time_clock.save()
+    # save 
+    time_model.save()
+    return HttpResponseRedirect(reverse('projects'))
 
-        # Return a success response
-        return HttpResponse("Elapsed time saved successfully.")
+
+
+
+
+# def update_timeclock(request):
+#     if request.method == "POST": 
+#         # process form 
+#         timeform = TimeForm(request.POST)
+#         if timeform.is_valid():
+#             TimeModel = timeform.save()
+#             # get start and end time 
+#             start_time = TimeModel.start_time
+#             end_time = TimeModel.end_time
+#             elapsed_time = end_time - start_time
+
+#             # convert to seconds 
+#             elapsed_time_seconds = elapsed_time.total_seconds()
+
+#             # update model with time
+#             TimeModel.elapsed_time = elapsed_time_seconds
+#             TimeModel.save()
+
+#             return HttpResponseRedirect('projects')
+         
+#         else: 
+#             # display form
+#             timeform = TimeForm()
+#             return render(request, '/track/project.html', {'timeform': timeform})
+
+
 
 
 # Everything below this adapted from previous assignments 

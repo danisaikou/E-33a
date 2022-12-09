@@ -2,10 +2,27 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils import timezone
 from datetime import date
+from django.db.models import F, Sum
 
 class User(AbstractUser):
     def __str__(self):
         return self.username
+
+class TimeModel(models.Model):
+    current_time = models.DateTimeField()
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
+    elapsed_time = models.FloatField(default=0.0)
+
+    def save(self, *args, **kwargs):
+        # Calculate elapsed time 
+        elapsed_time = self.end_time - self.start_time
+        elapsed_time_seconds = elapsed_time.total_seconds()
+
+        # Add the elapsed time to the elapsed_time field 
+        self.elapsed_time += elapsed_time_seconds
+
+        super().save(*args, **kwargs)
 
 class Project(models.Model):
     project_manager = models.ForeignKey(User, related_name='project_manager', on_delete=models.CASCADE)
@@ -13,9 +30,10 @@ class Project(models.Model):
     start = models.DateTimeField(auto_now_add=True)
     customer = models.CharField(max_length=250)
     budget_hours = models.IntegerField(default=0)
-    budget_dollars = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
+    budget_dollars = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     is_active = models.BooleanField("Active", default=True)
     projects = models.ForeignKey(User, blank=True, related_name="project_list", on_delete=models.CASCADE)
+    time_models = models.ManyToManyField(TimeModel, related_name='projects')
 
     class Meta: 
         ordering = ['-start']
@@ -29,12 +47,18 @@ class Project(models.Model):
         else: 
             return False
 
+    def get_elapsed_time(self):
+        elapsed_time = self.timemodel_set.all().aggregate(Sum('elapsed_time'))
+        return elapsed_time
+
 def default_future():
         return timezone.now() + timezone.timedelta(days=7)
 
 class TimeClock(models.Model):
     elapsed_time = models.FloatField()
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
+
+
 
 class ProjectTask(models.Model):
     #Status Options
