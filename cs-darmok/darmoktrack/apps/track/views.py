@@ -86,6 +86,7 @@ def project(request, id):
             time_model = TimeModel(
                 start_time=timeform.cleaned_data['start_time'],
                 end_time=timeform.cleaned_data['end_time'],
+                project_id=id, 
             )
             time_model.save()
 

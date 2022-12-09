@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils import timezone
-from datetime import date
+from datetime import date, timedelta
 from django.db.models import F, Sum
 
 class User(AbstractUser):
@@ -12,6 +12,7 @@ class TimeModel(models.Model):
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     elapsed_time = models.FloatField(default=0.0)
+    project = models.ForeignKey('Project', on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
         # Calculate elapsed time 
@@ -51,8 +52,23 @@ class Project(models.Model):
         return TimeModel.objects.filter(project=self)
 
     def get_elapsed_time(self):
+        # Get the total elapsed time associated with this Project 
         elapsed_time = self.timemodel_set.all().aggregate(Sum('elapsed_time'))
-        return elapsed_time
+
+        # Check if it's none because errors are dumb
+        if elapsed_time['elapsed_time__sum'] is None:
+            return 0
+        # Extract the elapsed time value from the dict object
+        elapsed_time_seconds = elapsed_time['elapsed_time__sum']
+
+        # Convert the elapsed time from seconds to a timedelta object
+        elapsed_time_timedelta = timedelta(seconds=elapsed_time_seconds)
+
+        # Convert the elapsed time from seconds to hours
+        elapsed_time_hours = elapsed_time_timedelta / timedelta(hours=1)
+
+        # Return the elapsed time in hours
+        return elapsed_time_hours
     
 
 def default_future():

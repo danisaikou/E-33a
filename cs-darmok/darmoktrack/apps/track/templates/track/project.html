@@ -80,7 +80,8 @@
                         </ul>
                         <ul><strong>Project Name:</strong> {{ project.name }}</ul>
                         <ul><strong>Customer:</strong> {{ project.customer }}</ul>
-                        <ul><strong>Budget Hours:</strong> {{ project.budget_hours }} / <strong>Current Hours:</strong> {{ project.elapsed_time }}</ul>
+                        <ul><strong>Budget Hours:</strong> {{ project.budget_hours }} / <strong>Current Hours:</strong> 
+                            {{ elapsed_time|floatformat:2 }} hours</ul>
                         <ul><strong>Budget (USD):</strong> ${{ project.budget_dollars }} / <strong>Current Total (USD):</strong> ${{ project.budget_hours|mul:200 }}</ul>
                         <br>
                         {% if project.is_active %}
