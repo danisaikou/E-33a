@@ -18,9 +18,7 @@ from .forms import NewProject, AddTaskForm, UpdateTaskForm
 
 
 def index(request):
-        return render(request, "track/index.html", {
-            "projects": request.user.project_list.filter(is_active=True),
-        })
+        return render(request, "track/index.html")
 
 def project_list(request):
 
@@ -95,6 +93,7 @@ def project(request, id):
         "now": now,
         "form": form,
     })
+
 
 def view_tasks(request):
     tasks = ProjectTask.objects.all()

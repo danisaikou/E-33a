@@ -9,9 +9,7 @@
         <div class="row">
         {% for project in projects %}
 
-             
-
-                <div class="card col-sm-6">
+                <div class="card col-sm-8">
                     <div class="{% if project.is_active %}card-header{% else %}card-header bg-secondary{% endif %}"> 
                         <h3 class="card-title mb-0"> 
                             Project {{ project.name }} 
