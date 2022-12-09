@@ -9,7 +9,6 @@ class User(AbstractUser):
         return self.username
 
 class TimeModel(models.Model):
-    current_time = models.DateTimeField()
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     elapsed_time = models.FloatField(default=0.0)
@@ -46,10 +45,15 @@ class Project(models.Model):
             return True
         else: 
             return False
+    
+    @property
+    def timemodel_set(self):
+        return TimeModel.objects.filter(project=self)
 
     def get_elapsed_time(self):
         elapsed_time = self.timemodel_set.all().aggregate(Sum('elapsed_time'))
         return elapsed_time
+    
 
 def default_future():
         return timezone.now() + timezone.timedelta(days=7)

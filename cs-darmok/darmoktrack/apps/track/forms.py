@@ -1,4 +1,5 @@
 from django import forms
+from django.forms import Select
 from .models import Project, ProjectTask, TimeModel
 
 class NewProject(forms.ModelForm):
@@ -32,10 +33,11 @@ class UpdateTaskForm(forms.ModelForm):
 class TimeForm(forms.ModelForm):
     class Meta:
         model = TimeModel
-        fields = ('start_time', 'end_time', )
+        fields = ('start_time', 'end_time', 'project', )
         widgets = {
             'start_time': forms.TextInput(attrs={'id': 'start_time'}),
             'end_time': forms.TextInput(attrs={'id': 'end_time'}),
+            'project': Select(),
         }
     project = forms.ModelChoiceField(queryset=Project.objects.all())
   

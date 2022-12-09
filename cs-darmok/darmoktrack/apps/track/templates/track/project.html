@@ -22,11 +22,21 @@
                         
                         <form action="" method="post">
                             {% csrf_token %}
-                            
+                            <div class="row justify-content-center">
+                            {{ timeform.project }}
+                            </div>
+                            <br>
+                            <div class="row justify-content-center">
                             <input type="button" class="btn btn-darmok btn-sm" value="Start Working" onclick="addCurrentTime('start_time')" /> {{ timeform.start_time }}
-
+                            </div>
+                            <br>
+                            <div class="row justify-content-center">
                             <input type="button" class="btn btn-darmok btn-sm" value="Stop Working" onclick="addCurrentTime('end_time')" /> {{ timeform.end_time }}
-                            <input type="submit" value="Submit" />
+                            </div>
+                            <br>
+                            <div class="row justify-content-center">
+                            <button type="submit" class="btn btn-darmok btn-lg center" value="Submit">Submit Time</button>
+                            </div>
                         </form>
                         <br>
                         <br>
@@ -36,7 +46,7 @@
                             var currentTime = new Date();
                         
                             // Format the date and time as a string
-                            var currentTimeString = currentTime.toLocaleString();
+                            var currentTimeString = currentTime.toISOString();
                         
                             // Get the form field element with the specified ID
                             var field = document.getElementById(fieldId);
@@ -70,7 +80,7 @@
                         </ul>
                         <ul><strong>Project Name:</strong> {{ project.name }}</ul>
                         <ul><strong>Customer:</strong> {{ project.customer }}</ul>
-                        <ul><strong>Budget Hours:</strong> {{ project.budget_hours }} / <strong>Current Hours:</strong> {{ project.budget_hours }}</ul>
+                        <ul><strong>Budget Hours:</strong> {{ project.budget_hours }} / <strong>Current Hours:</strong> {{ project.elapsed_time }}</ul>
                         <ul><strong>Budget (USD):</strong> ${{ project.budget_dollars }} / <strong>Current Total (USD):</strong> ${{ project.budget_hours|mul:200 }}</ul>
                         <br>
                         {% if project.is_active %}

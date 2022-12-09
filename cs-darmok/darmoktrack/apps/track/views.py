@@ -82,6 +82,7 @@ def project(request, id):
         timeform = TimeForm(request.POST)
 
         if timeform.is_valid():
+            print('Form is valid.')
             time_model = TimeModel(
                 start_time=timeform.cleaned_data['start_time'],
                 end_time=timeform.cleaned_data['end_time'],
@@ -90,12 +91,15 @@ def project(request, id):
 
             return redirect('project', id=id)
         else: 
+            print(timeform.errors)
+            messages.error(request, 'everything is terrible but at least we are all going to die')
             timeform = TimeForm()
+            #display error message 
     
     tasks_todo = ProjectTask.objects.filter(status=ProjectTask.TODO)
     tasks_complete = ProjectTask.objects.filter(status=ProjectTask.COMPLETE)
     tasks_canceled = ProjectTask.objects.filter(status=ProjectTask.CANCELED)
-
+    elapsed_time = project.get_elapsed_time()
 
     return render(request, "track/project.html", {
         "projects": projects, 
@@ -106,7 +110,8 @@ def project(request, id):
         "form": form,
         "timeform": timeform, 
         "project": project, 
-        "time_models": time_models
+        "time_models": time_models,
+        "elapsed_time": elapsed_time,
     })
 
 
