@@ -58,6 +58,7 @@ class Project(models.Model):
         # Check if it's none because errors are dumb
         if elapsed_time['elapsed_time__sum'] is None:
             return 0
+
         # Extract the elapsed time value from the dict object
         elapsed_time_seconds = elapsed_time['elapsed_time__sum']
 
@@ -77,7 +78,6 @@ def default_future():
 class TimeClock(models.Model):
     elapsed_time = models.FloatField()
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-
 
 
 class ProjectTask(models.Model):

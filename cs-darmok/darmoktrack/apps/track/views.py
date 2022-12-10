@@ -67,6 +67,7 @@ def project(request, id):
     time_models = project.time_models.all()
     form = AddTaskForm()
     timeform = TimeForm(initial={'project': project})
+    tasks = ProjectTask.objects.filter(project=project)
 
     if request.method == "POST":
 
@@ -97,9 +98,9 @@ def project(request, id):
             timeform = TimeForm()
             #display error message 
     
-    tasks_todo = ProjectTask.objects.filter(status=ProjectTask.TODO)
-    tasks_complete = ProjectTask.objects.filter(status=ProjectTask.COMPLETE)
-    tasks_canceled = ProjectTask.objects.filter(status=ProjectTask.CANCELED)
+    tasks_todo = ProjectTask.objects.filter(project=project, status=ProjectTask.TODO)
+    tasks_complete = ProjectTask.objects.filter(project=project, status=ProjectTask.COMPLETE)
+    tasks_canceled = ProjectTask.objects.filter(project=project, status=ProjectTask.CANCELED)
     elapsed_time = project.get_elapsed_time()
 
     return render(request, "track/project.html", {
@@ -113,6 +114,7 @@ def project(request, id):
         "project": project, 
         "time_models": time_models,
         "elapsed_time": elapsed_time,
+        "tasks": tasks
     })
 
 
