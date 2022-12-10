@@ -1,5 +1,6 @@
 {% extends 'track/layout.html' %}
 {% load mathfilters %}
+{% load humanize %}
 {% load static %}
 {% block title %} Project View | {% endblock %}
 
@@ -80,7 +81,8 @@
                         <ul><strong>Customer:</strong> {{ project.customer }}</ul>
                         <ul><strong>Budget Hours:</strong> {{ project.budget_hours }} / <strong>Current Hours:</strong> 
                             {{ elapsed_time|floatformat:2 }} hours</ul>
-                        <ul><strong>Budget (USD):</strong> ${{ project.budget_dollars }} / <strong>Current Total (USD):</strong> ${{ project.budget_hours|mul:200 }}</ul>
+                        <ul><strong>Budget (USD):</strong> ${{ project.budget_dollars }} / <strong>Current Total (USD):</strong> ${{ elapsed_time|mul:200|floatformat:2|intcomma }}
+                        </ul>
                         <br>
                         {% if project.is_active %}
                         <ul><h3>Tasks: </h3>
@@ -138,7 +140,6 @@
 
                         <ul>
                             <a href="{% url 'edit_project' project.id %}" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Edit</button></a>
-                            <a href="#" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Track</button></a>
                             <a href="#" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Expenses</button></a>
                             <a href="#" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Invoice</button></a>
 
@@ -149,7 +150,6 @@
                         {% else %}
                         <ul>
                             <button type="button" class="btn btn-secondary" disabled>Edit</button>
-                            <button type="button" class="btn btn-secondary" disabled>Track</button>
                             <button type="button" class="btn btn-secondary" disabled>Expenses</button>
                             <a href="#" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Invoice</button></a>                        
                         </ul>

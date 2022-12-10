@@ -25,7 +25,33 @@ def project_list(request):
             "projects": request.user.project_list.all(),
         })
 
-@login_required
+def create_task(request):
+    
+    if request.method == "POST":
+        form = AddTaskForm(request.POST)
+
+        # Check that the form is valid before proceeding 
+        if form.is_valid():
+
+            # Don't save the form until getting the user information so that it is stored with the listing
+            proj = form.save(commit=False)
+            proj.projects = request.user
+            proj.project_manager = request.user
+            
+            # Then save it and generate a blank form so the user knows something happened with their input
+            proj.save()
+            form = AddTaskForm()
+    
+    # If it's not POST, give the user the form to fill out 
+    else: 
+        form = AddTaskForm()
+    
+    # To the listing page with the form 
+    return render(request, "track/create_task.html", {
+        'form': form
+         
+    })
+
 def create_project(request):
     
      # Generate form from model forms for creating a listing, make sure the method is POST
@@ -51,7 +77,7 @@ def create_project(request):
     # To the listing page with the form 
     return render(request, "track/create_project.html", {
         'form': form
-         
+
     })
 
 class edit_project(UpdateView):
@@ -150,38 +176,6 @@ def update_time(request):
     # save 
     time_model.save()
     return HttpResponseRedirect(reverse('projects'))
-
-
-
-
-
-# def update_timeclock(request):
-#     if request.method == "POST": 
-#         # process form 
-#         timeform = TimeForm(request.POST)
-#         if timeform.is_valid():
-#             TimeModel = timeform.save()
-#             # get start and end time 
-#             start_time = TimeModel.start_time
-#             end_time = TimeModel.end_time
-#             elapsed_time = end_time - start_time
-
-#             # convert to seconds 
-#             elapsed_time_seconds = elapsed_time.total_seconds()
-
-#             # update model with time
-#             TimeModel.elapsed_time = elapsed_time_seconds
-#             TimeModel.save()
-
-#             return HttpResponseRedirect('projects')
-         
-#         else: 
-#             # display form
-#             timeform = TimeForm()
-#             return render(request, '/track/project.html', {'timeform': timeform})
-
-
-
 
 # Everything below this adapted from previous assignments 
 def login_view(request):

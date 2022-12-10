@@ -1,0 +1,31 @@
+{% extends "track/layout.html" %}
+{% block title %} Create Task | {% endblock %}
+{% load static %}
+{% block body %}
+
+    
+    <!-- Test javascript -->
+    {% load crispy_forms_tags %}  
+    <div class="card w-75">
+        <div class="card-header" id="headingOne"> 
+            <h1>New Task</h1>
+        </div>
+        <div class="card-body">
+            <h3>
+                <ul><h3>Tasks: </h3>
+                    <form id = "add-task-form" method="POST" action="">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-darmok">Add Task</button>
+                    </form>
+</h3>
+</div>
+</div>
+    
+    <!-- Doesn't matter if logged in-->
+    
+    
+    
+{% endblock %}
+
+

@@ -31,6 +31,8 @@ urlpatterns = [
     path("track/update_task/<int:pk>", views.update_task, name="update_task"), 
     path('tasks/', views.view_tasks, name='view_tasks'), 
     path("tasks/<int:pk>/", views.view_task, name="view_task"),
+    path("create_task", views.create_task, name="create_task"),
+
  
 
 ]
