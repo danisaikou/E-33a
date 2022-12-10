@@ -12,8 +12,8 @@ from datetime import datetime, timedelta
 
 import json
 
-from .models import User, Project, ProjectTask, TimeModel
-from .forms import NewProject, AddTaskForm, UpdateTaskForm, TimeForm
+from .models import User, Project, ProjectTask, TimeModel, Expense
+from .forms import NewProject, AddTaskForm, UpdateTaskForm, TimeForm, ExpenseForm
 
 
 def index(request):
@@ -94,22 +94,49 @@ def project(request, id):
     form = AddTaskForm()
     timeform = TimeForm(initial={'project': project})
     tasks = ProjectTask.objects.filter(project=project)
+    expenseform = ExpenseForm
+    expenses = Expense.objects.filter(project=project)
+    total_expenses = sum([expense.amount for expense in expenses])
 
     if request.method == "POST":
 
+        # Form to add new tasks 
         form = AddTaskForm(request.POST)
 
+        # Confirm that the form is valid 
         if form.is_valid():
             form.save()
 
             return redirect('project', id=id)
         else: 
             form = AddTaskForm()
+
+        # Form to add expenses to the project
+        expenseform = ExpenseForm(request.POST)
+
+        # Confirm form is valid 
+        if expenseform.is_valid():
+            # create an expense object and save it to the db
+            expense = expenseform.save(commit=False)
+            # set the project for the expense entry 
+            expense.project = project 
+            expense.save()
+
+            return redirect('project', id=id)
+        else: 
+            expenseform = ExpenseForm()
+
+            # get all expenses for the project
+            expenses = Expense.objects.filter(project=project)
+
+            # Calculate sum of all expenses for project
+            total_expenses = sum([expense.amount for expense in expenses])
         
+        # Form to add time to the project 
         timeform = TimeForm(request.POST)
 
+        # confirm that the form is valid and clean the start, end, and project inputs 
         if timeform.is_valid():
-            print('Form is valid.')
             time_model = TimeModel(
                 start_time=timeform.cleaned_data['start_time'],
                 end_time=timeform.cleaned_data['end_time'],
@@ -118,9 +145,10 @@ def project(request, id):
             time_model.save()
 
             return redirect('project', id=id)
+
         else: 
+            # Print errors when it doesn't work 
             print(timeform.errors)
-            messages.error(request, 'everything is terrible but at least we are all going to die')
             timeform = TimeForm()
             #display error message 
     
@@ -140,7 +168,10 @@ def project(request, id):
         "project": project, 
         "time_models": time_models,
         "elapsed_time": elapsed_time,
-        "tasks": tasks
+        "tasks": tasks, 
+        "expenseform": expenseform,
+        "expenses": expenses,
+        "total_expenses": total_expenses, 
     })
 
 
@@ -176,6 +207,14 @@ def update_time(request):
     # save 
     time_model.save()
     return HttpResponseRedirect(reverse('projects'))
+
+def invoice(request, project_id):
+    projects = Project.objects.filter(id=project_id)
+    project = Project.objects.get(id=project_id)
+    elapsed_time = project.get_elapsed_time()
+
+    return render(request, "track/invoice.html", {"projects": projects, "elapsed_time": elapsed_time})
+
 
 # Everything below this adapted from previous assignments 
 def login_view(request):

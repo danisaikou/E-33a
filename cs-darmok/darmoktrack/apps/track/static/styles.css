@@ -136,3 +136,18 @@ footer {
     color: red !important;
     font-weight: bold !important;
 }
+
+.darmok-font {
+    font-family: 'Fjalla One', Arial, Helvetica, sans-serif;
+    color: #e7006a;
+}
+
+.sm-img {
+    width: 100px;
+}
+
+.center {
+    margin: 0 auto; 
+    float: none;
+    margin-bottom: 10px;
+}

@@ -35,7 +35,7 @@
                         <ul>
                             <a href="{% url 'edit_project' project.id %}" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Edit</button></a>
                             <a href="#" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Expenses</button></a>
-                            <a href="#" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Invoice</button></a>
+                            <a href="{% url 'invoice' project_id=project.id %}" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Invoice</button></a>
                         </ul>
                         {% else %}
                         <ul> 

@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import Select
-from .models import Project, ProjectTask, TimeModel
+from .models import Project, ProjectTask, TimeModel, Expense
 
 class NewProject(forms.ModelForm):
     class Meta:
@@ -29,6 +29,20 @@ class UpdateTaskForm(forms.ModelForm):
     class Meta:
         model = ProjectTask
         fields =('description', 'task_owner', 'status')
+
+class ExpenseForm (forms.ModelForm):
+    class Meta: 
+        model = Expense
+        fields = ('project', 'amount', 'description', 'date',)
+        labels = {
+            'project': ('Project'), 
+            'description': ('Description'), 
+            'amount': ('Amount'), 
+            'date': ('Date Incurred'),
+        }
+        widgets = {
+            'project': Select(),
+        }
 
 class TimeForm(forms.ModelForm):
     class Meta:

@@ -25,6 +25,17 @@ class TimeModel(models.Model):
         super().save(*args, **kwargs)
 
 class Project(models.Model):
+    # Invoice status options 
+    PENDING = 'pending'
+    PAID = 'paid'
+    CREDIT_MEMO = 'credit_memo'
+    
+    CHOICES_STATUS = {
+        (PENDING, 'pending'),
+        (PAID, 'paid'),
+        (CREDIT_MEMO, 'credit_memo'),
+    }
+
     project_manager = models.ForeignKey(User, related_name='project_manager', on_delete=models.CASCADE)
     name = models.CharField("Project Name", max_length=250)
     start = models.DateTimeField(auto_now_add=True)
@@ -34,6 +45,7 @@ class Project(models.Model):
     is_active = models.BooleanField("Active", default=True)
     projects = models.ForeignKey(User, blank=True, related_name="project_list", on_delete=models.CASCADE)
     time_models = models.ManyToManyField(TimeModel, related_name='projects')
+    invoice_status = models.CharField(max_length=25, choices=CHOICES_STATUS, default=PENDING)
 
     class Meta: 
         ordering = ['-start']
@@ -70,6 +82,7 @@ class Project(models.Model):
 
         # Return the elapsed time in hours
         return elapsed_time_hours
+    
     
 
 def default_future():
@@ -110,7 +123,14 @@ class ProjectTask(models.Model):
     def is_past_due(self):
         return date.today() > {self.due_date}
 
+class Expense(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    description = models.CharField(max_length=255)
+    date = models.DateField()
 
+    def __str__(self):
+        return f"{self.project} - {self.amount}"
     
 
 

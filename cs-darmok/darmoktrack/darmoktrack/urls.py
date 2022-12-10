@@ -32,6 +32,7 @@ urlpatterns = [
     path('tasks/', views.view_tasks, name='view_tasks'), 
     path("tasks/<int:pk>/", views.view_task, name="view_task"),
     path("create_task", views.create_task, name="create_task"),
+    path("invoice/<int:project_id>", views.invoice, name="invoice"),
 
  
 

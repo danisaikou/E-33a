@@ -1,0 +1,122 @@
+{% extends "track/layout.html" %}
+{% block title %} Home | {% endblock %}
+{% load static %}
+{% load humanize %}
+{% load mathfilters %}
+{% block body %}
+
+    
+    <!-- Test javascript -->
+    
+    <!-- Doesn't matter if logged in-->
+
+
+
+    {% for project in projects %}
+    <div class="container">
+        <div class="card">
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-sm-6">
+                        <h6 class="mb-3"><strong>Invoice No. {{ project.id }}</strong></h6>
+                    </div>
+                    <div class="col-sm-6">
+                        <h6 class="mb-3"><strong>Status: <em>{{ project.invoice_status }}</em></strong></h6>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-sm-6">
+                        <h4 class="mb-3">From:</h4>
+                        <img class="sm-img" src="{% static '/images/sm logo.png' %}" alt="logo">
+
+                        <div>
+                            <strong>Darmok Consulting, LLC</strong>
+                        </div>
+                        <div>1360 Niagara St, #402</div>
+                        <div>Buffalo, NY 14213</div>
+                        <div>Phone: +1 (917) 720 8309</div>
+                        <div>Email: info@darmokconsulting.com</div>
+                    </div>
+                    <div class="col-sm-6">
+                        <h4 class="mb-3">To:</h4>
+                        <div>
+                            <strong>{{ project.customer }}</strong>
+                        </div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
+
+                <div class="table-responsible-sm">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">Decription</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if tasks_complete %}
+                            <tr>
+                                <td>{{ task.description }}</td>
+                            {% else %}
+                                <td>{{ project.name }}</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-4 col-sm-5">
+                    </div>
+                    <div class="col-lg-4 col-sm-5 ml-auto">
+                        <table class="table table-clear">
+                            <tbody>
+                                <tr>
+                                    <td class="left">
+                                        <strong>Labor Total</strong>
+                                    </td>
+                                    <td class="right">
+                                        ${{ elapsed_time|mul:200|floatformat:2|intcomma }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="left">
+                                        <strong>Exepnses</strong>
+                                    </td>
+                                    <td class="right">
+                                        $100
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="left">
+                                        <strong>Total</strong>
+                                    </td>
+                                    <td class="right">
+                                        <strong>${{ elapsed_time|mul:200|floatformat:2|intcomma }} + exp </strong>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table> 
+                    </div>
+                </div> 
+                <em>Payment is due within 30 days of receipt.</em>       
+            </div>
+        </div>
+    </div>
+
+{% endfor %}
+
+
+    
+
+            
+                
+    
+{% endblock %}
+<script src='{% static 'network/scripts.js' %}'></script>
+
+

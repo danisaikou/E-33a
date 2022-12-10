@@ -10,12 +10,53 @@
         <div class="row">
         {% for project in projects %}
 
+        
+
+            <!-- Main card with information about the project -->
+        <div class="card col-sm-8">
+            <div class="card-header">
+                <h3 class="card-title mb-0">
+                    {{ project.customer }}: {{ project.name }}
+                </h3>
+            </div>
+                    <br>
+                    <ul><strong>Status:</strong> 
+                        {% if project.is_active %}
+                        Active
+                        {% else %}
+                        <div class="inactive">
+                            Inactive
+                        </div>
+                        {% endif %}
+                    </ul>
+                    <ul><strong>Project Name:</strong> {{ project.name }}</ul>
+                    <ul><strong>Customer:</strong> {{ project.customer }}</ul>
+                    <ul><strong>Budget Hours:</strong> {{ project.budget_hours }} / <strong>Current Hours:</strong> 
+                        {{ elapsed_time|floatformat:2 }} hours</ul>
+                    <ul><strong>Labor Total:</strong> ${{ elapsed_time|mul:200|floatformat:2|intcomma }} / <strong>Expenses Total:</strong> ${{ total_expenses }}</ul>
+                    <ul><strong>Budget (USD):</strong> ${{ project.budget_dollars }} / <strong>Current Total (USD):</strong> ${{ elapsed_time|mul:200|floatformat:2|intcomma|add:total_expenses}}
+                    </ul>
+                    <br>
+                    {% if project.is_active %}
+                    <ul>
+                        <a href="{% url 'edit_project' project.id %}" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Edit</button></a>
+                        <a href="#" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Invoice</button></a>
+
+                    </ul>
+                    {% else %}
+                    <ul>
+                        <button type="button" class="btn btn-secondary" disabled>Edit</button>
+                        <a href="#" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Invoice</button></a>                        
+                    </ul>
+                    {% endif %}
+                </div>
+
+
+                <!-- Card to add time -->
                 <div class="card col-sm-8">
-                    <div class="{% if project.is_active %}card-header{% else %}card-header bg-secondary{% endif %}"> 
-                        <h3 class="card-title mb-0"> 
-                            Project: {{ project.name }} 
-                            <br>
-                            for: {{ project.customer }}
+                    <div class="card-header">
+                        <h3 class="card-title mb-0">
+                            Add Time to Project
                         </h3>
                     </div>
 
@@ -58,7 +99,27 @@
                             console.log("Worked")
                         }
                         </script>
-                        
+                    </div>
+                </div>
+
+                                <!-- Card to add expense -->
+
+                <div class="card col-sm-8">
+                    <div class="card-header">
+                        <h3 class="card-title mb-0">
+                            Add Expenses to Project
+                        </h3>
+                    </div>
+
+
+                        <br>
+                        <br>
+                        <form method = "post">
+                            {% csrf_token %}
+                            {{ expenseform.as_p }}
+                            <button class="btn btn-darmok btn-sm" type = "submit">Add Expense</button>
+                        <br>
+                        <br>
                        {% comment %}
                         <button type="button" class="btn btn-darmok" id="start-button" onclick="startTimer()">Start Tracking Time</button>
                         <button type="button" class="btn btn-darmok" id="stop-button" onclick="stopTimer()">Stop Tracking Time</button>
@@ -67,26 +128,21 @@
                         <br>
                         -->
                         {% endcomment %}
+                    </div>
+                        
 
-                        <ul><strong>Status:</strong> 
-                            {% if project.is_active %}
-                            Active
-                            {% else %}
-                            <div class="inactive">
-                                Inactive
-                            </div>
-                            {% endif %}
-                        </ul>
-                        <ul><strong>Project Name:</strong> {{ project.name }}</ul>
-                        <ul><strong>Customer:</strong> {{ project.customer }}</ul>
-                        <ul><strong>Budget Hours:</strong> {{ project.budget_hours }} / <strong>Current Hours:</strong> 
-                            {{ elapsed_time|floatformat:2 }} hours</ul>
-                        <ul><strong>Budget (USD):</strong> ${{ project.budget_dollars }} / <strong>Current Total (USD):</strong> ${{ elapsed_time|mul:200|floatformat:2|intcomma }}
-                        </ul>
+                                    <!-- Card to add tasks -->
+
+                    <div class="card col-sm-8">
+                        <div class="card-header">
+                            <h3 class="card-title mb-0">
+                                Add Tasks to Project
+                            </h3>
+                        </div>
+    
                         <br>
                         {% if project.is_active %}
-                        <ul><h3>Tasks: </h3>
-
+<ul>
                             <form id = "add-task-form" method="POST" action="">
                                 {% csrf_token %}
                                 {{ form.as_p }}
@@ -138,21 +194,7 @@
                                 <br>
                                 
 
-                        <ul>
-                            <a href="{% url 'edit_project' project.id %}" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Edit</button></a>
-                            <a href="#" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Expenses</button></a>
-                            <a href="#" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Invoice</button></a>
-
-                            
-
-
-                        </ul>
-                        {% else %}
-                        <ul>
-                            <button type="button" class="btn btn-secondary" disabled>Edit</button>
-                            <button type="button" class="btn btn-secondary" disabled>Expenses</button>
-                            <a href="#" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Invoice</button></a>                        
-                        </ul>
+                        
                         {% endif %}
                         
                     </div>
