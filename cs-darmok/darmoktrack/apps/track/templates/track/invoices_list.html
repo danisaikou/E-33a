@@ -1,0 +1,18 @@
+{% extends 'track/layout.html' %}
+{% load mathfilters %}
+{% load humanize %}
+{% load static %}
+{% block title %} Invoice View | {% endblock %}
+
+{% block body %}
+<h1>All Projects</h1> 
+<h2>Click an invoice name for more details</h2>
+
+{% if user.is_authenticated %}
+    {% for invoice in invoices %}
+    <li>{{ invoice.project }} - 
+    {% endfor %}
+{% endif %}
+
+
+{% endblock %}

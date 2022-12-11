@@ -80,15 +80,15 @@
                                         <strong>Labor Total</strong>
                                     </td>
                                     <td class="right">
-                                        ${{ elapsed_time|mul:200|floatformat:2|intcomma }}
+                                        $ {{ elapsed_time|mul:200|floatformat:2|intcomma }}
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="left">
-                                        <strong>Exepnses</strong>
+                                        <strong>Expenses</strong>
                                     </td>
                                     <td class="right">
-                                        $100
+                                        $ {{ total_expenses|floatformat:2|intcomma }}
                                     </td>
                                 </tr>
                                 <tr>
@@ -96,7 +96,8 @@
                                         <strong>Total</strong>
                                     </td>
                                     <td class="right">
-                                        <strong>${{ elapsed_time|mul:200|floatformat:2|intcomma }} + exp </strong>
+                                        <strong>$ {{ project_total|floatformat:2|intcomma }}
+                                        </strong>
                                     </td>
                                 </tr>
                             </tbody>
@@ -109,12 +110,6 @@
     </div>
 
 {% endfor %}
-
-
-    
-
-            
-                
     
 {% endblock %}
 <script src='{% static 'network/scripts.js' %}'></script>

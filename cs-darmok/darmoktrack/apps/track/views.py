@@ -9,6 +9,7 @@ from django.views.generic import View, ListView, DetailView, CreateView, UpdateV
 from django.contrib import messages
 from django.utils import timezone
 from datetime import datetime, timedelta
+from decimal import Decimal
 
 import json
 
@@ -91,10 +92,10 @@ def project(request, id):
     projects = Project.objects.filter(id=id)
     project = Project.objects.get(id=id)
     time_models = project.time_models.all()
-    form = AddTaskForm()
+    form = AddTaskForm(initial={'project': project})
     timeform = TimeForm(initial={'project': project})
     tasks = ProjectTask.objects.filter(project=project)
-    expenseform = ExpenseForm
+    expenseform = ExpenseForm(initial={'project': project})
     expenses = Expense.objects.filter(project=project)
     total_expenses = sum([expense.amount for expense in expenses])
 
@@ -117,9 +118,12 @@ def project(request, id):
         # Confirm form is valid 
         if expenseform.is_valid():
             # create an expense object and save it to the db
-            expense = expenseform.save(commit=False)
-            # set the project for the expense entry 
-            expense.project = project 
+            expense = Expense(
+                amount = expenseform.cleaned_data['amount'], 
+                description = expenseform.cleaned_data['description'],
+                date = expenseform.cleaned_data['date'],
+                project_id=id,
+            )
             expense.save()
 
             return redirect('project', id=id)
@@ -156,6 +160,9 @@ def project(request, id):
     tasks_complete = ProjectTask.objects.filter(project=project, status=ProjectTask.COMPLETE)
     tasks_canceled = ProjectTask.objects.filter(project=project, status=ProjectTask.CANCELED)
     elapsed_time = project.get_elapsed_time()
+    elapsed_time = Decimal(elapsed_time)
+    project_total = elapsed_time * 200 + total_expenses
+
 
     return render(request, "track/project.html", {
         "projects": projects, 
@@ -171,7 +178,8 @@ def project(request, id):
         "tasks": tasks, 
         "expenseform": expenseform,
         "expenses": expenses,
-        "total_expenses": total_expenses, 
+        "total_expenses": total_expenses,
+        "project_total": project_total, 
     })
 
 
@@ -212,9 +220,32 @@ def invoice(request, project_id):
     projects = Project.objects.filter(id=project_id)
     project = Project.objects.get(id=project_id)
     elapsed_time = project.get_elapsed_time()
+    expenses = Expense.objects.filter(project=project)
+    total_expenses = sum([expense.amount for expense in expenses])
+    elapsed_time = Decimal(elapsed_time)
+    project_total = elapsed_time * 200 + total_expenses
 
-    return render(request, "track/invoice.html", {"projects": projects, "elapsed_time": elapsed_time})
+    return render(request, "track/invoice.html", {
+        "projects": projects, 
+        "elapsed_time": elapsed_time, 
+        "expenses": expenses, 
+        "total_expenses": total_expenses,
+        "project_total": project_total,
+        })
 
+def invoices_list(request):
+    projects = Project.objects.all()
+    project = Project.objects.all()
+    elapsed_time = project.get_elapsed_time()
+    expenses = Expense.objects.all(project=project)
+    total_expenses = sum([expense.amount for expense in expenses])
+
+    return render(request, "track/invoices_list.html", {
+        "projects": projects, 
+        "elapsed_time": elapsed_time, 
+        "expenses": expenses, 
+        "total_expenses": total_expenses,
+        })
 
 # Everything below this adapted from previous assignments 
 def login_view(request):
