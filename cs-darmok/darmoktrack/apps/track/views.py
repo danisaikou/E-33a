@@ -235,16 +235,9 @@ def invoice(request, project_id):
 
 def invoices_list(request):
     projects = Project.objects.all()
-    project = Project.objects.all()
-    elapsed_time = project.get_elapsed_time()
-    expenses = Expense.objects.all(project=project)
-    total_expenses = sum([expense.amount for expense in expenses])
 
     return render(request, "track/invoices_list.html", {
         "projects": projects, 
-        "elapsed_time": elapsed_time, 
-        "expenses": expenses, 
-        "total_expenses": total_expenses,
         })
 
 # Everything below this adapted from previous assignments 

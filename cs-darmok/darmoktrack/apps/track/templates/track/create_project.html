@@ -6,6 +6,7 @@
     
     <!-- Test javascript -->
     {% load crispy_forms_tags %}  
+    {% if user.is_authenticated %}
     <div class="card w-75">
         <div class="card-header" id="headingOne"> 
             <h1>New Project</h1>
@@ -24,6 +25,8 @@
         <br>
         <button type="submit" class="btn btn-darmok">Save Project</button>
     </form>
+    {% else redirect 'login' %}
+    {% endif %}
 </h3>
 </div>
 </div>

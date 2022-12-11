@@ -1,5 +1,7 @@
 Buckle up, here we go. 
 
+To run: python3 manage.py runserver 
+
 TABLE OF CONTENTS: 
 PART I: Introduction / Background
 PART II: How to Use 
@@ -20,15 +22,21 @@ PART II: How to Use
 
     2) Once you've registered and logged in, you have a few different options: 
         a) My Projects: This is a view of all your active projects. Since you've just registered, there won't be much here yet! 
+        
         b) New Project: Here is where you enter your first project. You can enter the name of your customer, the project name, how many hours you think it will take, and what the estimated budget is. 
+        
         c) New Task: On this screen, you can add tasks to any of the Darmok Consulting projects (even if it is not one managed by you). In my experience, Project Managers love generating work for other teams, now is your chance! 
+        
         d) Invoices: This is where you can get a list of all invoices for your projects. 
 
     3) Once you've created a project (step 2b) it's time to do stuff with it! Click "My Projects" from the navigation bar, and you'll be taken to a list of all of your open projects. From this screen you can click "Edit" to edit any of the initial project details, or Invoice to generate an invoice for the project. Most importantly, you can click the name of the project (formatted as "Customer - Project Name"), and this is where the magic happens! 
 
     4) After clicking into an individual project you have all sorts of options. To start, you see all the current information for this project. Just like on the project list, you can edit the original information or generate an invoice. If you keep scrolling you get: 
+
         a) Add Time to Project: very self-explanatory, this is where you keep track of time spent. You click the button to "Start Working" when you start, and it will automatically enter the current date and time. When you're done, just press "Stop Working" and it will enter your stop time. After that, click "Submit Time" and the elapsed time will be saved against the project! You can do this as many times as you want, it will keep adding the new elapsed time value to the existing total, so you don't lose track of any of your important billable time! :) 
+        
         b) Add Expenses to Project: this is how you get reimbursed for any expenses incurred while working on the project. For example, if you have to pay for parking at the client site, you would just enter the date (with a convenient calendar pop-ou), how much parking cost, and a brief description, e.g. "parking meter." This expense will be added to the total invoice for the project. 
+        
         c) Add Tasks to Project: Projects can have a lot of moving parts, and it's important to keep track of what needs to be done versus what has already happened. To add a task, just enter the description, choose who is responsible for executing it, and the due date (by default this is one week in the future). The task will show up at the top under the project information. From there, you can click the task name to update the description, owner, and to update the status (e.g. when you finish, you can change it from todo to complete). 
 
 PART III: How it Was Built 
@@ -58,4 +66,4 @@ PART III: How it Was Built
 
     INVOICE:
     - Generating the invoice on the screen was easy, I basically just copied what was making all the info display on the project screen minus the forms, and prettied it up with bootstrap
-    - Getting the invoice to print to PDF was a different story. This is one of those things that sounds like it should be super easy but I had to try a few different methods to get it to work. The xhtml2pdf seemed very promising but ultimately decided to use javascript. 
+    - Getting the invoice to print to PDF was a different story. This is one of those things that sounds like it should be super easy but I had to try a few different methods to get it to work. 

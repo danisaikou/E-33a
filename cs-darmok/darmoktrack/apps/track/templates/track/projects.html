@@ -6,59 +6,65 @@
 <h1>All Projects</h1> 
 <h2>Click a project name for more details</h2>
 
-{% if user.is_authenticated %}
-{% for project in projects %}
-        <div class="card w-75">
-            <div class="{% if project.is_active %}card-header{% else %}card-header bg-secondary{% endif %}"> 
-                <h2 class="card-title mb-0"> 
-                        <a href="{% url 'project' project.id %}">{{ project.customer}} - {{ project.name }} 📝 </a>
-                    </h2>
-                    <h3>{% if project.is_active %}
-                        Active
-                        {% else %}
-                        <div class="inactive">
-                        Inactive
-                        </div>
-                        {% endif %}
-                    </h3>
-             
-            </div>
 
-            <div id="collapseOne">
-                <div class="{% if project.is_active %}card-body{% else %}card-body bg-inactive{% endif %}">
-                    <ul><strong>Project Name:</strong> {{ project.name }}</ul>
-                    <ul><strong>Project Manager:</strong> {{ project.project_manager }}</ul>
-                    <ul><strong>Customer:</strong> {{ project.customer }}</ul>
-                   
-                    <br>
-                    {% if project.is_active %}
-                        <ul>
-                            <a href="{% url 'edit_project' project.id %}" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Edit</button></a>
-                            <a href="{% url 'invoice' project_id=project.id %}" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Invoice</button></a>
-                        </ul>
-                        {% else %}
-                        <ul> 
-                            <button type="button" class="btn btn-darmok" disabled>Edit</button>
-                            <a href="{% url 'invoice' project_id=project.id %}" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Invoice</button></a>
-                        </ul>
-                        {% endif %}
+
+
+{% if user.is_authenticated %}
+
+    {% for project in projects %}
+            <div class="card w-75">
+                <div class="{% if project.is_active %}card-header{% else %}card-header bg-secondary{% endif %}"> 
+                    <h2 class="card-title mb-0"> 
+                            <a href="{% url 'project' project.id %}">{{ project.customer}} - {{ project.name }} 📝 </a>
+                        </h2>
+                        <h3>{% if project.is_active %}
+                            Active
+                            {% else %}
+                            <div class="inactive">
+                            Inactive
+                            </div>
+                            {% endif %}
+                        </h3>
+                
+                </div>
+
+                <div id="collapseOne">
+                    <div class="{% if project.is_active %}card-body{% else %}card-body bg-inactive{% endif %}">
+                        <ul><strong>Project Name:</strong> {{ project.name }}</ul>
+                        <ul><strong>Project Manager:</strong> {{ project.project_manager }}</ul>
+                        <ul><strong>Customer:</strong> {{ project.customer }}</ul>
+                    
+                        <br>
+                        {% if project.is_active %}
+                            <ul>
+                                <a href="{% url 'edit_project' project.id %}" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Edit</button></a>
+                                <a href="{% url 'invoice' project_id=project.id %}" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Invoice</button></a>
+                            </ul>
+                            {% else %}
+                            <ul> 
+                                <button type="button" class="btn btn-darmok" disabled>Edit</button>
+                                <a href="{% url 'invoice' project_id=project.id %}" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Invoice</button></a>
+                            </ul>
+                            {% endif %}
+                    </div>
                 </div>
             </div>
-        </div>
-        
+            
 
-        {% empty %}
-        <div class="card w-75">
-            <div class="card-header" id="headingOne"> 
-                <h1 class="card-title mb-0"> 
-                    <button class="btn" data-toggle="collapse" data-target="#collapseOne" aria-expanded="True" aria-controls="collapseOne"> 
-                        <h3>No open projects.</h3> 
-                    </button>
-                </h1>
-            </div>
-{% endfor %}
-</div>
-</div>
+            {% empty %}
+            <div class="card w-75">
+                <div class="card-header" id="headingOne"> 
+                    <h1 class="card-title mb-0"> 
+                        <button class="btn" data-toggle="collapse" data-target="#collapseOne" aria-expanded="True" aria-controls="collapseOne"> 
+                            <h3>No open projects.</h3> 
+                        </button>
+                    </h1>
+                </div>
+    {% endfor %}
+    </div>
+    </div>
+
+
 {% endif %}
 
 
