@@ -151,3 +151,7 @@ footer {
     float: none;
     margin-bottom: 10px;
 }
+
+.bg-grey {
+    background-color: #D3D3D3;
+}

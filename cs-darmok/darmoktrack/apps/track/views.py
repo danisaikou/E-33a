@@ -224,6 +224,8 @@ def invoice(request, project_id):
     total_expenses = sum([expense.amount for expense in expenses])
     elapsed_time = Decimal(elapsed_time)
     project_total = elapsed_time * 200 + total_expenses
+    tasks_complete = ProjectTask.objects.filter(project=project, status=ProjectTask.COMPLETE)
+
 
     return render(request, "track/invoice.html", {
         "projects": projects, 
@@ -231,6 +233,7 @@ def invoice(request, project_id):
         "expenses": expenses, 
         "total_expenses": total_expenses,
         "project_total": project_total,
+        "tasks_complete": tasks_complete,
         })
 
 def invoices_list(request):

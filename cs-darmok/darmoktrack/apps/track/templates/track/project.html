@@ -72,15 +72,19 @@
                                             <td id="alert">Past due</id>{% else %}<td>On Time{% endif %}</td>
                                         </tr>
                                         {% endfor %}
-                                    </table>
                                     
                                 {% endif %}
                                 <br>
                                 {% if tasks_complete %}
-                                <strong>Completed:</strong>
-                                    {% for task in tasks_complete %}
-                                        <li>{{ task.task_owner }}: {{ task.description }}</li>
-                                    {% endfor %}
+                                        {% for task in tasks_complete %}
+                                        <tr>
+                                                <th scope="row" class="bg-grey">{{ task.task_owner }}</th>
+                                                <td class="bg-grey"><a href="{% url 'update_task' task.pk %}">{{ task.description }}</a></td>
+                                                <td class="bg-grey">{{ task.due_date|date:"SHORT_DATE_FORMAT" }}</td>
+                                                <td class="bg-grey">{{ task.status }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </table>
                                 {% endif %}
                 </div>
                 

@@ -63,11 +63,13 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <td>{{ project.name }}</td>
                             {% if tasks_complete %}
+                                {% for task in tasks_complete %}
                             <tr>
-                                <td>{{ task.description }}</td>
-                            {% else %}
-                                <td>{{ project.name }}</td>
+                                <td>&nbsp;&nbsp;&nbsp;&nbsp;{{ task.description }}</td>
+                                {% endfor %}
+                                
                             </tr>
                             {% endif %}
                         </tbody>
