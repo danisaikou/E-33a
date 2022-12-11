@@ -1,6 +1,6 @@
 Buckle up, here we go. 
 
-To run: python3 manage.py runserver 
+To run: python3 manage.py runserver (or python manage.py runserver, depending on your computer)
 
 TABLE OF CONTENTS: 
 PART I: Introduction / Background
@@ -66,4 +66,4 @@ PART III: How it Was Built
 
     INVOICE:
     - Generating the invoice on the screen was easy, I basically just copied what was making all the info display on the project screen minus the forms, and prettied it up with bootstrap
-    - Getting the invoice to print to PDF was a different story. This is one of those things that sounds like it should be super easy but I had to try a few different methods to get it to work. 
+    - Getting the invoice to print to PDF was a different story. I wound up just putting a button to 'print' because all modern browsers have a 'print to PDF' function anyway. I did try jsPDF and a few other things, but it kept either rendering the document blank or with just the code and none of the front end formatting. 
