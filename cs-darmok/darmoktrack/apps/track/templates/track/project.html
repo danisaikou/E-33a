@@ -1,4 +1,4 @@
-{% extends 'track/layout.html' %}
+{% extends "track/layout.html" %}
 {% load mathfilters %}
 {% load humanize %}
 {% load static %}
@@ -19,7 +19,7 @@
                 <br>
                 <!-- Update Project Status if it is Active vs Inactive -->
                 <ul>
-                        {% url 'toggle_project_status' project.id as toggle_url %}
+                        {% url "toggle_project_status" project.id as toggle_url %}
                         <a href="{{ toggle_url }}" class="btn btn-darmok btn-sm">
                             <strong>Status:</strong> 
                         {% if project.is_active %}
@@ -57,7 +57,7 @@
                     {% for task in tasks_todo %}
                         <tr>
                             <th scope="row">{{ task.task_owner }}</th>
-                            <td><a href="{% url 'update_task' task.pk %}">{{ task.description }}</a></td>
+                            <td><a href="{% url "update_task" task.pk %}">{{ task.description }}</a></td>
                             <td>{{ task.due_date|date:"SHORT_DATE_FORMAT" }}</td>
                             {% now "Y-m-d" as todays_date %}{% if todays_date > task.due_date|date:"Y-m-d" %}
                             <td id="alert">Past due</id>{% else %}<td>On Time{% endif %}</td>
@@ -69,7 +69,7 @@
                     {% for task in tasks_complete %}
                         <tr>
                             <th scope="row" class="bg-grey">{{ task.task_owner }}</th>
-                            <td class="bg-grey"><a href="{% url 'update_task' task.pk %}">{{ task.description }}</a></td>
+                            <td class="bg-grey"><a href="{% url "update_task" task.pk %}">{{ task.description }}</a></td>
                             <td class="bg-grey">{{ task.due_date|date:"SHORT_DATE_FORMAT" }}</td>
                             <td class="bg-grey">{{ task.status }}</td>
                         </tr>
@@ -87,21 +87,21 @@
             <!-- If the project is active, show the edit button AND invoice button-->
             {% if project.is_active %}
                 <ul>
-                    <a href="{% url 'edit_project' project.id %}" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Edit</button></a>
-                    <a href="{% url 'invoice' project_id=project.id %}" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Invoice</button></a>
+                    <a href="{% url "edit_project" project.id %}" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Edit</button></a>
+                    <a href="{% url "invoice" project_id=project.id %}" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Invoice</button></a>
                 </ul>
             <!-- Otherwise grey out edit and just show invoice button-->
             {% else %}
                 <ul>
                     <button type="button" class="btn btn-secondary" disabled>Edit</button>
-                    <a href="{% url 'invoice' project_id=project.id %}" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Invoice</button></a>
+                    <a href="{% url "invoice" project_id=project.id %}" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Invoice</button></a>
                 </ul>
             {% endif %}                   
                 </div>
             </div>
         </div>
         
-        <!-- If the project is active, show all this stuff, otherwise don't -->
+        <!-- If the project is active, show all this stuff, otherwise don"t -->
         {% if project.is_active %}
                 <!-- Card to add time -->
                 <div class="card col-sm-8">
@@ -120,11 +120,11 @@
                             </div>
                             <br>
                             <div class="row justify-content-center">
-                                <input type="button" class="btn btn-darmok btn-sm" value="Start Working" onclick="addCurrentTime('start_time')" /> {{ timeform.start_time }}
+                                <input type="button" class="btn btn-darmok btn-sm" value="Start Working" onclick="addCurrentTime("start_time")" /> {{ timeform.start_time }}
                             </div>
                             <br>
                             <div class="row justify-content-center">
-                                <input type="button" class="btn btn-darmok btn-sm" value="Stop Working" onclick="addCurrentTime('end_time')" /> {{ timeform.end_time }}
+                                <input type="button" class="btn btn-darmok btn-sm" value="Stop Working" onclick="addCurrentTime("end_time")" /> {{ timeform.end_time }}
                             </div>
                             <br>
                             <div class="row justify-content-center">
@@ -226,7 +226,7 @@
         
     {% endif %}
 
-<script src="{% static '/scripts.js' %}"      
+<script src="{% static "/scripts.js" %}"      
 
 
 {% endblock %}

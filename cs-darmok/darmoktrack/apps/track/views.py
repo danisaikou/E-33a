@@ -13,20 +13,20 @@ from .models import Expense, Project, ProjectTask, TimeModel, User
 
 
 def index(request):
-    # Render the home page 
-    return render(request, "track/index.html")
+    # Render the home page
+    return render(request, 'track/index.html')
 
 
 def project_list(request):
-    # Render the projects page with the users projects 
-    return render(request, "track/projects.html", {
-            "projects": request.user.project_list.all(),
+    # Render the projects page with the users projects
+    return render(request, 'track/projects.html', {
+            'projects': request.user.project_list.all(),
         })
 
 
 def create_task(request):
     # Handle form submission to create a new task
-    if request.method == "POST":
+    if request.method == 'POST':
         form = AddTaskForm(request.POST)
         # Check that the form is valid before proceeding
         if form.is_valid():
@@ -44,14 +44,14 @@ def create_task(request):
         form = AddTaskForm()
 
     # To the listing page with the form
-    return render(request, "track/create_task.html", {
+    return render(request, 'track/create_task.html', {
         'form': form
     })
 
 
 def create_project(request):
     # Generate form from model forms for creating a listing
-    if request.method == "POST":
+    if request.method == 'POST':
         form = NewProject(request.POST)
 
         # Check that the form is valid before proceeding
@@ -71,7 +71,7 @@ def create_project(request):
         form = NewProject()
 
     # To the listing page with the form
-    return render(request, "track/create_project.html", {
+    return render(request, 'track/create_project.html', {
         'form': form
 
     })
@@ -80,7 +80,7 @@ def create_project(request):
 class edit_project(UpdateView):
     # Define model and specify template to render
     model = Project
-    template_name = "track/edit_project.html"
+    template_name = 'track/edit_project.html'
     fields = ['name', 'budget_hours', 'budget_dollars', ]
 
     def get_success_url(self):
@@ -96,12 +96,11 @@ def project(request, id):
     tasks = ProjectTask.objects.filter(project=project)
     expenseform = ExpenseForm(initial={'project': project})
     expenses = Expense.objects.filter(project=project)
-    
+
     # Calc total expenses by summing all expenses
     total_expenses = sum([expense.amount for expense in expenses])
-    task = ProjectTask.objects.get(pk=id)
 
-    if request.method == "POST":
+    if request.method == 'POST':
 
         # Form to add new tasks
         form = AddTaskForm(request.POST)
@@ -165,30 +164,29 @@ def project(request, id):
     elapsed_time = Decimal(elapsed_time)
     project_total = elapsed_time * 200 + total_expenses
 
-    return render(request, "track/project.html", {
-        "projects": projects,
-        "id": id,
-        "tasks_todo": tasks_todo,
-        "tasks_complete": tasks_complete,
-        "tasks_canceled": tasks_canceled,
-        "form": form,
-        "timeform": timeform,
-        "project": project,
-        "time_models": time_models,
-        "elapsed_time": elapsed_time,
-        "tasks": tasks,
-        "expenseform": expenseform,
-        "expenses": expenses,
-        "total_expenses": total_expenses,
-        "project_total": project_total,
-        "task": task,
+    return render(request, 'track/project.html', {
+        'projects': projects,
+        'id': id,
+        'tasks_todo': tasks_todo,
+        'tasks_complete': tasks_complete,
+        'tasks_canceled': tasks_canceled,
+        'form': form,
+        'timeform': timeform,
+        'project': project,
+        'time_models': time_models,
+        'elapsed_time': elapsed_time,
+        'tasks': tasks,
+        'expenseform': expenseform,
+        'expenses': expenses,
+        'total_expenses': total_expenses,
+        'project_total': project_total,
     })
 
 
 def toggle_project_status(request, id):
     project = Project.objects.get(id=id)
     project.toggle_status()
-    return redirect("project", id=id)
+    return redirect('project', id=id)
 
 
 def view_tasks(request):
@@ -198,7 +196,7 @@ def view_tasks(request):
 
 def view_task(request, pk):
     task = ProjectTask.objects.get(pk=pk)
-    return render(request, "tasks/task.html", {"task": task})
+    return render(request, 'tasks/task.html', {'task': task})
 
 
 def update_task(request, pk):
@@ -238,21 +236,21 @@ def invoice(request, project_id):
     project_total = elapsed_time * 200 + total_expenses
     tasks_complete = ProjectTask.objects.filter(project=project, status=ProjectTask.COMPLETE)
 
-    return render(request, "track/invoice.html", {
-        "projects": projects,
-        "elapsed_time": elapsed_time,
-        "expenses": expenses,
-        "total_expenses": total_expenses,
-        "project_total": project_total,
-        "tasks_complete": tasks_complete,
+    return render(request, 'track/invoice.html', {
+        'projects': projects,
+        'elapsed_time': elapsed_time,
+        'expenses': expenses,
+        'total_expenses': total_expenses,
+        'project_total': project_total,
+        'tasks_complete': tasks_complete,
         })
 
 
 def invoices_list(request):
     projects = Project.objects.all()
 
-    return render(request, "track/invoices_list.html", {
-        "projects": projects,
+    return render(request, 'track/invoices_list.html', {
+        'projects': projects,
         })
 
 

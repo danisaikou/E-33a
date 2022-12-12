@@ -8,14 +8,14 @@
     
     <!-- Test javascript -->
     
-    <!-- Doesn't matter if logged in-->
+    <!-- Doesn"t matter if logged in-->
 
 
 
     {% for project in projects %}
     <div class="container">
         <div class="col-md-12">
-            <img class="sm-img" src="{% static '/images/sm logo.png' %}" alt="logo">
+            <img class="sm-img" src="{% static "/images/sm logo.png" %}" alt="logo">
             <br>
             <button class="btn btn-darmok btn-sm" onclick="window.print()">Print this invoice</button>
 
@@ -120,6 +120,6 @@
 {% endfor %}
     
 {% endblock %}
-<script src='{% static 'network/scripts.js' %}'></script>
+<script src="{% static "network/scripts.js" %}"></script>
 
 

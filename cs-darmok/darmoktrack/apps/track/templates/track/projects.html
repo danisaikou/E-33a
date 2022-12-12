@@ -1,4 +1,4 @@
-{% extends 'track/layout.html' %}
+{% extends "track/layout.html" %}
 {% load mathfilters %}
 {% block title %}Projects | {% endblock %}
 
@@ -15,7 +15,7 @@
             <div class="card w-75">
                 <div class="{% if project.is_active %}card-header{% else %}card-header bg-secondary{% endif %}"> 
                     <h2 class="card-title mb-0"> 
-                            <a href="{% url 'project' project.id %}">{{ project.customer}} - {{ project.name }} 📝 </a>
+                            <a href="{% url "project" project.id %}">{{ project.customer}} - {{ project.name }} 📝 </a>
                         </h2>
                         <h3>{% if project.is_active %}
                             Active
@@ -37,13 +37,13 @@
                         <br>
                         {% if project.is_active %}
                             <ul>
-                                <a href="{% url 'edit_project' project.id %}" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Edit</button></a>
-                                <a href="{% url 'invoice' project_id=project.id %}" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Invoice</button></a>
+                                <a href="{% url "edit_project" project.id %}" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Edit</button></a>
+                                <a href="{% url "invoice" project_id=project.id %}" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Invoice</button></a>
                             </ul>
                             {% else %}
                             <ul> 
                                 <button type="button" class="btn btn-darmok" disabled>Edit</button>
-                                <a href="{% url 'invoice' project_id=project.id %}" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Invoice</button></a>
+                                <a href="{% url "invoice" project_id=project.id %}" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Invoice</button></a>
                             </ul>
                             {% endif %}
                     </div>

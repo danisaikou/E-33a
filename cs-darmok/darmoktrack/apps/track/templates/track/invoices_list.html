@@ -1,4 +1,4 @@
-{% extends 'track/layout.html' %}
+{% extends "track/layout.html" %}
 {% load mathfilters %}
 {% load humanize %}
 {% load static %}
@@ -17,7 +17,7 @@
     
 
         <ul class="list-group list-group-flush">
-            <a href="{% url 'invoice' project_id=project.id %}" class="list-group-item">{{ project.name }}</a>
+            <a href="{% url "invoice" project_id=project.id %}" class="list-group-item">{{ project.name }}</a>
 
       
     {% endfor %}
