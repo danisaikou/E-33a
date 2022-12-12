@@ -33,7 +33,9 @@ urlpatterns = [
     path("tasks/<int:pk>/", views.view_task, name="view_task"),
     path("create_task", views.create_task, name="create_task"),
     path("invoice/<int:project_id>", views.invoice, name="invoice"),
-    path("invoices_list/", views.invoices_list, name="invoices_list"), 
+    path("invoices_list/", views.invoices_list, name="invoices_list"),
+    path("project/<int:id>/toggle/", views.toggle_project_status, name="toggle_project_status"),
+ 
  
 
 ]

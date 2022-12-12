@@ -14,9 +14,11 @@
 
     {% for project in projects %}
     <div class="container">
+        <div class="col-md-12">
+            <img class="sm-img" src="{% static '/images/sm logo.png' %}" alt="logo">
+            <br>
+            <button class="btn btn-darmok btn-sm" onclick="window.print()">Print this invoice</button>
 
-        <div class="col-md-12 text-right">
-            <button class="btn btn-darmok" onclick="window.print()">Print this invoice</button>
         </div>
         <br>
         <div class="card">
@@ -33,7 +35,6 @@
                 <div class="row mb-3">
                     <div class="col-sm-6">
                         <h4 class="mb-3">From:</h4>
-                        <img class="sm-img" src="{% static '/images/sm logo.png' %}" alt="logo">
 
                         <div>
                             <strong>Darmok Consulting, LLC</strong>
@@ -48,8 +49,8 @@
                         <div>
                             <strong>{{ project.customer }}</strong>
                         </div>
-                        <div></div>
-                        <div></div>
+                        <div>{{ project.customer_address }}</div>
+                        <div>{{ project.customer_citystatezip }}</div>
                         <div></div>
                         <div></div>
                     </div>

@@ -17,6 +17,10 @@
         {% csrf_token %}
         {{ form.customer|as_crispy_field }}
         <br>
+        {{ form.customer_address|as_crispy_field }}
+        <br>
+        {{ form.customer_citystatezip|as_crispy_field }}
+        <br>
         {{ form.name|as_crispy_field }}
         <br>
         {{ form.budget_hours|as_crispy_field}} 
@@ -25,7 +29,6 @@
         <br>
         <button type="submit" class="btn btn-darmok">Save Project</button>
     </form>
-    {% else redirect 'login' %}
     {% endif %}
 </h3>
 </div>

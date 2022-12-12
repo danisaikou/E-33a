@@ -8,88 +8,101 @@
 
     {% if user.is_authenticated %}
         <div class="row">
-        {% for project in projects %}
-
-        
-
-            <!-- Main card with information about the project -->
-        <div class="card col-sm-8">
-            <div class="card-header">
-                <h3 class="card-title mb-0">
-                    {{ project.customer }}: {{ project.name }}
-                </h3>
-            </div>
-                    <br>
-                    <ul><strong>Status:</strong> 
+            {% for project in projects %}
+                <!-- Main card with information about the project -->
+                <div class="card col-sm-8">
+                    <div class="card-header">
+                        <h3 class="card-title mb-0">
+                            {{ project.customer }}: {{ project.name }}
+                        </h3>
+                    </div>
+                <br>
+                <!-- Update Project Status if it is Active vs Inactive -->
+                <ul>
+                        {% url 'toggle_project_status' project.id as toggle_url %}
+                        <a href="{{ toggle_url }}" class="btn btn-darmok btn-sm">
+                            <strong>Status:</strong> 
                         {% if project.is_active %}
-                        Active
+                            Active
                         {% else %}
-                        <div class="inactive">
-                            Inactive
-                        </div>
+                            <div class="inactive">
+                                Inactive
+                            </div>
                         {% endif %}
-                    </ul>
-                    <ul><strong>Project Name:</strong> {{ project.name }}</ul>
-                    <ul><strong>Customer:</strong> {{ project.customer }}</ul>
-                    <ul><strong>Budget Hours:</strong> {{ project.budget_hours }} / <strong>Current Hours:</strong> 
-                        {{ elapsed_time|floatformat:2 }} hours</ul>
-                    <ul><strong>Labor Total:</strong> ${{ elapsed_time|mul:200|floatformat:2|intcomma }} / <strong>Expenses Total:</strong> ${{ total_expenses|floatformat:2|intcomma }}</ul>
-                    <ul><strong>Budget (USD):</strong> ${{ project.budget_dollars }} / <strong>Current Total (USD):</strong> ${{ project_total|floatformat:2|intcomma }}
-                    </ul>
-                    <br>
-                    {% if project.is_active %}
-                    <ul>
-                        <a href="{% url 'edit_project' project.id %}" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Edit</button></a>
-                        <a href="{% url 'invoice' project_id=project.id %}" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Invoice</button></a>
+                        </a>
+                <!-- Display project information -->
+                </ul>
+                <ul><strong>Project Name:</strong> {{ project.name }}</ul>
+                <ul><strong>Customer:</strong> {{ project.customer }}</ul>
+                <ul><strong>Budget Hours:</strong> {{ project.budget_hours }} / <strong>Current Hours:</strong> 
+                    {{ elapsed_time|floatformat:2 }} hours</ul>
+                <ul><strong>Labor Total:</strong> ${{ elapsed_time|mul:200|floatformat:2|intcomma }} / <strong>Expenses Total:</strong> ${{ total_expenses|floatformat:2|intcomma }}</ul>
+                <ul><strong>Budget (USD):</strong> ${{ project.budget_dollars }} / <strong>Current Total (USD):</strong> ${{ project_total|floatformat:2|intcomma }}</ul>
+             
+                <br>
+                {% if project.is_active %}
 
-                    </ul>
-                    {% else %}
-                    <ul>
-                        <button type="button" class="btn btn-secondary" disabled>Edit</button>
-                        <a href="{% url 'invoice' project_id=project.id %}" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Invoice</button></a>
-                    </ul>
-                    {% endif %}
-
-                    <!-- List tasks -->
-                    {% if tasks_todo %}
-                                <em>Today is {% now "SHORT_DATE_FORMAT" %}</em>
-                                <table class="table">
-                                    <thead class="thead-dark">
-                                        <tr>
-                                            <th scope="col">Task Owner</th>
-                                            <th scope="col">Description</th>
-                                            <th scope="col">Due Date</th>
-                                            <th scope="col">Status</th>
-                                        </tr>
-                                    </thead>
-                                        
-                                    {% for task in tasks_todo %}
-                                        <tr>
-                                            <th scope="row">{{ task.task_owner }}</th>
-                                            <td><a href="{% url 'update_task' task.pk %}">{{ task.description }}</a></td>
-                                            <td>{{ task.due_date|date:"SHORT_DATE_FORMAT" }}</td>
-                                            {% now "Y-m-d" as todays_date %}{% if todays_date > task.due_date|date:"Y-m-d" %}
-                                            <td id="alert">Past due</id>{% else %}<td>On Time{% endif %}</td>
-                                        </tr>
-                                        {% endfor %}
-                                    
-                                {% endif %}
-                                <br>
-                                {% if tasks_complete %}
-                                        {% for task in tasks_complete %}
-                                        <tr>
-                                                <th scope="row" class="bg-grey">{{ task.task_owner }}</th>
-                                                <td class="bg-grey"><a href="{% url 'update_task' task.pk %}">{{ task.description }}</a></td>
-                                                <td class="bg-grey">{{ task.due_date|date:"SHORT_DATE_FORMAT" }}</td>
-                                                <td class="bg-grey">{{ task.status }}</td>
-                                            </tr>
-                                            {% endfor %}
-                                        </table>
-                                {% endif %}
-                </div>
+                <!-- List tasks -->
                 
+                    <table class="table">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">Task Owner</th>
+                                <th scope="col">Description</th>
+                                <th scope="col">Due Date</th>
+                                <th scope="col">Status</th>
+                            </tr>
+                        </thead>
+                        {% if tasks_todo %}
+                    {% for task in tasks_todo %}
+                        <tr>
+                            <th scope="row">{{ task.task_owner }}</th>
+                            <td><a href="{% url 'update_task' task.pk %}">{{ task.description }}</a></td>
+                            <td>{{ task.due_date|date:"SHORT_DATE_FORMAT" }}</td>
+                            {% now "Y-m-d" as todays_date %}{% if todays_date > task.due_date|date:"Y-m-d" %}
+                            <td id="alert">Past due</id>{% else %}<td>On Time{% endif %}</td>
+                        </tr>
+                    {% endfor %}
+                    {% endif %}
+                        <br>
+                {% if tasks_complete %}
+                    {% for task in tasks_complete %}
+                        <tr>
+                            <th scope="row" class="bg-grey">{{ task.task_owner }}</th>
+                            <td class="bg-grey"><a href="{% url 'update_task' task.pk %}">{{ task.description }}</a></td>
+                            <td class="bg-grey">{{ task.due_date|date:"SHORT_DATE_FORMAT" }}</td>
+                            <td class="bg-grey">{{ task.status }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+                {% if not tasks_todo and not tasks_complete %}
+                    <table class="table">
+                        <thead class="thead-dark">
+                            <tr>
+                            <th scope="row" class="bg-grey">No tasks yet.</th>
+                {% endif %}
+                    </table>
+           {% endif %}
 
-
+            <!-- If the project is active, show the edit button AND invoice button-->
+            {% if project.is_active %}
+                <ul>
+                    <a href="{% url 'edit_project' project.id %}" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Edit</button></a>
+                    <a href="{% url 'invoice' project_id=project.id %}" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Invoice</button></a>
+                </ul>
+            <!-- Otherwise grey out edit and just show invoice button-->
+            {% else %}
+                <ul>
+                    <button type="button" class="btn btn-secondary" disabled>Edit</button>
+                    <a href="{% url 'invoice' project_id=project.id %}" data-id="{{ project.id }}"><button type="button" class="btn btn-darmok">Invoice</button></a>
+                </ul>
+            {% endif %}                   
+                </div>
+            </div>
+        </div>
+        
+        <!-- If the project is active, show all this stuff, otherwise don't -->
+        {% if project.is_active %}
                 <!-- Card to add time -->
                 <div class="card col-sm-8">
                     <div class="card-header">
@@ -98,29 +111,31 @@
                         </h3>
                     </div>
 
-                    <div class="{% if project.is_active %}card-body{% else %}card-body bg-inactive{% endif %}">
-                        
-                        <form action="" method="post">
-                            {% csrf_token %}
+                <div class="{% if project.is_active %}card-body{% else %}card-body bg-inactive{% endif %}">
+                    <!-- Form for time entry -->
+                    <form action="" method="post">
+                        {% csrf_token %}
                             <div class="row justify-content-center">
                             {{ timeform.project }}
                             </div>
                             <br>
                             <div class="row justify-content-center">
-                            <input type="button" class="btn btn-darmok btn-sm" value="Start Working" onclick="addCurrentTime('start_time')" /> {{ timeform.start_time }}
+                                <input type="button" class="btn btn-darmok btn-sm" value="Start Working" onclick="addCurrentTime('start_time')" /> {{ timeform.start_time }}
                             </div>
                             <br>
                             <div class="row justify-content-center">
-                            <input type="button" class="btn btn-darmok btn-sm" value="Stop Working" onclick="addCurrentTime('end_time')" /> {{ timeform.end_time }}
+                                <input type="button" class="btn btn-darmok btn-sm" value="Stop Working" onclick="addCurrentTime('end_time')" /> {{ timeform.end_time }}
                             </div>
                             <br>
                             <div class="row justify-content-center">
-                            <button type="submit" class="btn btn-darmok btn-lg center" value="Submit">Submit Time</button>
+                                <button type="submit" class="btn btn-darmok btn-lg center" value="Submit">Submit Time</button>
                             </div>
-                        </form>
-                        <br>
-                        <br>
-                        <script>
+                    </form>
+                   
+                    <br>
+                    <br>
+
+                    <script>
                         function addCurrentTime(fieldId) {
                             // Get the current date and time
                             var currentTime = new Date();
@@ -136,58 +151,45 @@
 
                             console.log("time entered")
                         }
-                        </script>
+                    </script>
                     </div>
                 </div>
-
-                                <!-- Card to add expense -->
-
+                                
+                <!-- Card to add expense -->
                 <div class="card col-sm-8">
                     <div class="card-header">
                         <h3 class="card-title mb-0">
                             Add Expenses to Project
                         </h3>
                     </div>
-                        <br>
-                        <br>
-                        <form action="" method = "post">
-                            {% csrf_token %}
-                            <div class="row justify-content-center">
+                    <br>
+                    <br>
+                    <form action="" method = "post">
+                        {% csrf_token %}
+                        <div class="row justify-content-center">
                             {{ expenseform.project }} &nbsp; &nbsp; &nbsp; 
-                            </div>
-                            <br>
-                            <div class="row justify-content-center">
-                            <strong>Date:</strong> &nbsp; {{ expenseform.date }}
-                            </div>
-                            <br>
-                            <div class="row justify-content-center">
-                                <strong>Amount:</strong> &nbsp;{{ expenseform.amount }}
-                            </div>
-                            <br>
-                            <div class="row justify-content-center">
-                                <strong>Description:</strong> &nbsp;{{ expenseform.description }}
-                            </div>
-                            <br>
-                            <div class="row justify-content-center">
-                                <button class="btn btn-darmok btn-sm" type = "submit">Add Expense</button>
-                            </div>
-                            <br>
-                      
-                        </form>
+                        </div>
                         <br>
+                        <p>
+                            Date: &nbsp; {{ expenseform.date }}
+                        </p>
+                        <p>
+                            Amount: &nbsp;{{ expenseform.amount }}
+                        </p>
+                        <p>
+                            Description: &nbsp;{{ expenseform.description }}
+                        </p>
+                        <div class="row justify-content-center">
+                            <button class="btn btn-darmok btn-sm" type = "submit">Add Expense</button>
+                        </div>
                         <br>
-                       {% comment %}
-                        <button type="button" class="btn btn-darmok" id="start-button" onclick="startTimer()">Start Tracking Time</button>
-                        <button type="button" class="btn btn-darmok" id="stop-button" onclick="stopTimer()">Stop Tracking Time</button>
-                        <br>
-                        <div id="time-display"></div>
-                        <br>
-                        -->
-                        {% endcomment %}
+                    
+                    </form>
+                    <br>
+                    <br>
                     </div>
                         
-
-                                    <!-- Card to add tasks -->
+                    <!-- Card to add tasks -->
 
                     <div class="card col-sm-8">
                         <div class="card-header">
@@ -198,56 +200,16 @@
     
                         <br>
                         {% if project.is_active %}
-<ul>
+                        <ul>
                             <form id = "add-task-form" method="POST" action="">
                                 {% csrf_token %}
                                 {{ form.as_p }}
                                 <button type="submit" class="btn btn-darmok">Add Task</button>
                             </form>
+                                                        
                                 
-                            <ul id="task-list"></ul>
-                            
-                                {% if not tasks_todo and not tasks_complete %}
-                                No tasks yet.
-                               
-                                {% endif %}
-                                {% comment %} {% if tasks_todo %}
-                                <em>Today is {% now "SHORT_DATE_FORMAT" %}</em>
-                                <table class="table">
-                                    <thead class="thead-dark">
-                                        <tr>
-                                            <th scope="col">Task Owner</th>
-                                            <th scope="col">Description</th>
-                                            <th scope="col">Created</th>
-                                            <th scope="col">Due Date</th>
-                                            <th scope="col">Status</th>
-                                            <th scope="col">Update</th>
-                                        </tr>
-                                    </thead>
-                                        
-                                    {% for task in tasks_todo %}
-                                        <tr>
-                                            <th scope="row">{{ task.task_owner }}</th>
-                                            <td>{{ task.description }}</td>
-                                            <td>{{ task.created|date:"SHORT_DATE_FORMAT" }}</td>
-                                            <td>{{ task.due_date|date:"SHORT_DATE_FORMAT" }}</td>
-                                            {% now "Y-m-d" as todays_date %}{% if todays_date > task.due_date|date:"Y-m-d" %}
-                                            <td id="alert">Past due</id>{% else %}<td>On Time{% endif %}</td>
-                                            <td><a href="{% url 'update_task' task.pk %}">Update task</a></td>
-                                        </tr>
-                                        {% endfor %}
-                                    </table>
-                                    
-                                {% endif %}
-                                <br>
-                                {% if tasks_complete %}
-                                <strong>Completed:</strong>
-                                    {% for task in tasks_complete %}
-                                        <li>{{ task.task_owner }}: {{ task.description }}</li>
-                                    {% endfor %}
-                                {% endif %} {% endcomment %}
                             </ul>
-                                <br>
+                            <br>
                                 
 
                         
@@ -255,6 +217,7 @@
                         
                     </div>
                 </div>
+                {% endif %}
 
         {% endfor %}
         
@@ -263,7 +226,6 @@
     </div>
         
     {% endif %}
-
 
 <script src="{% static '/scripts.js' %}"      
 

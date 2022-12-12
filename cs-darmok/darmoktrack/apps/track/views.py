@@ -98,6 +98,7 @@ def project(request, id):
     expenseform = ExpenseForm(initial={'project': project})
     expenses = Expense.objects.filter(project=project)
     total_expenses = sum([expense.amount for expense in expenses])
+    task = ProjectTask.objects.get(pk=id)
 
     if request.method == "POST":
 
@@ -179,9 +180,14 @@ def project(request, id):
         "expenseform": expenseform,
         "expenses": expenses,
         "total_expenses": total_expenses,
-        "project_total": project_total, 
+        "project_total": project_total,
+        "task": task, 
     })
 
+def toggle_project_status(request, id):
+    project = Project.objects.get(id=id)
+    project.toggle_status()
+    return redirect("project", id=id)
 
 def view_tasks(request):
     tasks = ProjectTask.objects.all()

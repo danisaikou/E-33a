@@ -133,7 +133,7 @@ footer {
 }
 
 #alert {
-    color: red !important;
+    color: #e7006a !important;
     font-weight: bold !important;
 }
 
@@ -155,3 +155,12 @@ footer {
 .bg-grey {
     background-color: #D3D3D3;
 }
+
+/* Thank you https://stackoverflow.com/questions/33911049/btn-xs-no-longer-a-valid-option-in-bootstrap-4 for this */
+
+.btn-group-xs > .btn, .btn-xs {
+    padding: .25rem .4rem;
+    font-size: .875rem;
+    line-height: .5;
+    border-radius: .2rem;
+  }

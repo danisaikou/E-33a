@@ -40,6 +40,8 @@ class Project(models.Model):
     name = models.CharField("Project Name", max_length=250)
     start = models.DateTimeField(auto_now_add=True)
     customer = models.CharField(max_length=250)
+    customer_address = models.CharField(max_length=250, null=True)
+    customer_citystatezip = models.CharField(max_length=250, null=True)
     budget_hours = models.IntegerField(default=0)
     budget_dollars = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     is_active = models.BooleanField("Active", default=True)
@@ -83,7 +85,9 @@ class Project(models.Model):
         # Return the elapsed time in hours
         return elapsed_time_hours
     
-    
+    def toggle_status(self):
+        self.is_active = not self.is_active
+        self.save()
 
 def default_future():
         return timezone.now() + timezone.timedelta(days=7)
