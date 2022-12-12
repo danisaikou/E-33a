@@ -1,26 +1,41 @@
 from django import forms
 from django.forms import Select
-from .models import Project, ProjectTask, TimeModel, Expense
 from django.forms.widgets import NumberInput
+
+from .models import Expense, Project, ProjectTask, TimeModel
+
 
 class NewProject(forms.ModelForm):
     class Meta:
         model = Project
-        fields =('customer', 'name', 'budget_hours', 'budget_dollars', 'customer_address', 'customer_citystatezip')
+        fields = (
+            'customer',
+            'name',
+            'budget_hours',
+            'budget_dollars',
+            'customer_address',
+            'customer_citystatezip',
+        )
         labels = {
             'name': ('Project Name'),
-            'customer': ('Customer Name'), 
-            'customer_address': ('Customer Address'), 
+            'customer': ('Customer Name'),
+            'customer_address': ('Customer Address'),
             'customer_citystatezip': ('Customer City, State, Zip'),
             'budget_hours': ('Estimated Hours'),
             'budget_dollars': ('Budget'),
-
         }
+
 
 class AddTaskForm(forms.ModelForm):
     class Meta:
         model = ProjectTask
-        fields =('project', 'description', 'task_owner', 'due_date','status',)
+        fields = (
+            'project',
+            'description',
+            'task_owner',
+            'due_date',
+            'status',
+            )
         labels = {
             'project': ('Project'),
             'description': ('Task Description'),
@@ -32,28 +47,23 @@ class AddTaskForm(forms.ModelForm):
             'description': forms.Textarea(attrs={'rows': 1}),
         }
 
+
 class UpdateTaskForm(forms.ModelForm):
     class Meta:
         model = ProjectTask
-        fields =('description', 'task_owner', 'status',)
+        fields = ('description', 'task_owner', 'status',)
         widgets = {
             'description': forms.Textarea(attrs={'rows': 1}),
-
         }
 
-class UpdateTaskStatus(forms.ModelForm):
-    class Meta:
-        model = ProjectTask
-        fields =('status',)
-        
 
 class ExpenseForm (forms.ModelForm):
-    class Meta: 
+    class Meta:
         model = Expense
         fields = ('project', 'amount', 'description', 'date',)
         labels = {
-            'description': ('Description'), 
-            'amount': ('Amount'), 
+            'description': ('Description'),
+            'amount': ('Amount'),
             'date': ('Date Incurred'),
         }
         widgets = {
@@ -61,6 +71,7 @@ class ExpenseForm (forms.ModelForm):
             'description': forms.Textarea(attrs={'rows': 1}),
             'date': NumberInput(attrs={'type': 'date'})
         }
+
 
 class TimeForm(forms.ModelForm):
     class Meta:
@@ -72,4 +83,3 @@ class TimeForm(forms.ModelForm):
             'project': Select(),
         }
     project = forms.ModelChoiceField(queryset=Project.objects.all())
-  

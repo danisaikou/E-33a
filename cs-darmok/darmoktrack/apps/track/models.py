@@ -4,9 +4,11 @@ from django.utils import timezone
 from datetime import date, timedelta
 from django.db.models import F, Sum
 
+
 class User(AbstractUser):
     def __str__(self):
         return self.username
+
 
 class TimeModel(models.Model):
     start_time = models.DateTimeField()
@@ -15,21 +17,22 @@ class TimeModel(models.Model):
     project = models.ForeignKey('Project', on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
-        # Calculate elapsed time 
+        # Calculate elapsed time
         elapsed_time = self.end_time - self.start_time
         elapsed_time_seconds = elapsed_time.total_seconds()
 
-        # Add the elapsed time to the elapsed_time field 
+        # Add the elapsed time to the elapsed_time field
         self.elapsed_time += elapsed_time_seconds
 
         super().save(*args, **kwargs)
 
+
 class Project(models.Model):
-    # Invoice status options 
+    # Invoice status options
     PENDING = 'pending'
     PAID = 'paid'
     CREDIT_MEMO = 'credit_memo'
-    
+
     CHOICES_STATUS = {
         (PENDING, 'pending'),
         (PAID, 'paid'),
@@ -49,24 +52,24 @@ class Project(models.Model):
     time_models = models.ManyToManyField(TimeModel, related_name='projects')
     invoice_status = models.CharField(max_length=25, choices=CHOICES_STATUS, default=PENDING)
 
-    class Meta: 
+    class Meta:
         ordering = ['-start']
 
     def __str__(self):
         return f"Project {self.id} - {self.name} managed by {self.project_manager.username}"
-    
+
     def inactive(self):
         if self.is_active():
             return True
-        else: 
+        else:
             return False
-    
+
     @property
     def timemodel_set(self):
         return TimeModel.objects.filter(project=self)
 
     def get_elapsed_time(self):
-        # Get the total elapsed time associated with this Project 
+        # Get the total elapsed time associated with this Project
         elapsed_time = self.timemodel_set.all().aggregate(Sum('elapsed_time'))
 
         # Check if it's none because errors are dumb
@@ -84,13 +87,15 @@ class Project(models.Model):
 
         # Return the elapsed time in hours
         return elapsed_time_hours
-    
+
     def toggle_status(self):
         self.is_active = not self.is_active
         self.save()
 
+
 def default_future():
-        return timezone.now() + timezone.timedelta(days=7)
+    return timezone.now() + timezone.timedelta(days=7)
+
 
 class TimeClock(models.Model):
     elapsed_time = models.FloatField()
@@ -98,11 +103,11 @@ class TimeClock(models.Model):
 
 
 class ProjectTask(models.Model):
-    #Status Options
+    # Status Options
     TODO = 'todo'
     COMPLETE = 'complete'
     CANCELED = 'canceled'
-    
+
     CHOICES_STATUS = {
         (TODO, 'todo'),
         (COMPLETE, 'complete'),
@@ -115,17 +120,17 @@ class ProjectTask(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=25, choices=CHOICES_STATUS, default=TODO)
     due_date = models.DateTimeField(default=default_future)
-    
 
     class Meta:
         ordering = ['due_date']
-    
+
     def __str__(self):
         return f"{self.description}: due {self.due_date}"
 
-    @property 
+    @property
     def is_past_due(self):
         return date.today() > {self.due_date}
+
 
 class Expense(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
@@ -135,6 +140,3 @@ class Expense(models.Model):
 
     def __str__(self):
         return f"{self.project} - {self.amount}"
-    
-
-

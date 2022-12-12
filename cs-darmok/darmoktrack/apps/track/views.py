@@ -1,92 +1,88 @@
-from django.contrib.auth import authenticate, login, logout
-from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse
-from django.contrib.auth.decorators import login_required
-from django.core.paginator import Paginator
-from django.views.generic import View, ListView, DetailView, CreateView, UpdateView
-from django.contrib import messages
-from django.utils import timezone
-from datetime import datetime, timedelta
 from decimal import Decimal
 
-import json
+from django.contrib.auth import authenticate, login, logout
+from django.db import IntegrityError
+from django.http import HttpResponseRedirect
+from django.shortcuts import redirect, render
+from django.urls import reverse
+from django.views.generic import UpdateView
 
-from .models import User, Project, ProjectTask, TimeModel, Expense
-from .forms import NewProject, AddTaskForm, UpdateTaskForm, TimeForm, ExpenseForm
+from .forms import (AddTaskForm, ExpenseForm, NewProject, TimeForm,
+                    UpdateTaskForm)
+from .models import Expense, Project, ProjectTask, TimeModel, User
 
 
 def index(request):
-        return render(request, "track/index.html")
+    return render(request, "track/index.html")
+
 
 def project_list(request):
-
     return render(request, "track/projects.html", {
             "projects": request.user.project_list.all(),
         })
 
+
 def create_task(request):
-    
     if request.method == "POST":
         form = AddTaskForm(request.POST)
-
-        # Check that the form is valid before proceeding 
+        # Check that the form is valid before proceeding
         if form.is_valid():
 
-            # Don't save the form until getting the user information so that it is stored with the listing
+            # Get user info so it's stored with the listing
             proj = form.save(commit=False)
             proj.projects = request.user
             proj.project_manager = request.user
-            
-            # Then save it and generate a blank form so the user knows something happened with their input
+
+            # Save it and generate a blank form
             proj.save()
             form = AddTaskForm()
-    
-    # If it's not POST, give the user the form to fill out 
-    else: 
+
+    # If it's not POST, give the user the form to fill out
+    else:
         form = AddTaskForm()
-    
-    # To the listing page with the form 
+
+    # To the listing page with the form
     return render(request, "track/create_task.html", {
         'form': form
-         
     })
 
+
 def create_project(request):
-    
-     # Generate form from model forms for creating a listing, make sure the method is POST
+    # Generate form from model forms for creating a listing
     if request.method == "POST":
         form = NewProject(request.POST)
 
-        # Check that the form is valid before proceeding 
+        # Check that the form is valid before proceeding
         if form.is_valid():
 
-            # Don't save the form until getting the user information so that it is stored with the listing
+            # Get user info to store with project
             proj = form.save(commit=False)
             proj.projects = request.user
             proj.project_manager = request.user
-            
-            # Then save it and generate a blank form so the user knows something happened with their input
+
+            # Save and generate blank form
             proj.save()
             form = NewProject()
-    
-    # If it's not POST, give the user the form to fill out 
-    else: 
+
+    # If it's not POST, give the user the form to fill out
+    else:
         form = NewProject()
-    
-    # To the listing page with the form 
+
+    # To the listing page with the form
     return render(request, "track/create_project.html", {
         'form': form
 
     })
 
+
 class edit_project(UpdateView):
     model = Project
     template_name = "track/edit_project.html"
-    fields = ['name', 'budget_hours', 'budget_dollars',]
+    fields = ['name', 'budget_hours', 'budget_dollars', ]
+
     def get_success_url(self):
         return reverse('projects')
+
 
 def project(request, id):
     projects = Project.objects.filter(id=id)
@@ -102,33 +98,33 @@ def project(request, id):
 
     if request.method == "POST":
 
-        # Form to add new tasks 
+        # Form to add new tasks
         form = AddTaskForm(request.POST)
 
-        # Confirm that the form is valid 
+        # Confirm that the form is valid
         if form.is_valid():
             form.save()
 
             return redirect('project', id=id)
-        else: 
+        else:
             form = AddTaskForm()
 
         # Form to add expenses to the project
         expenseform = ExpenseForm(request.POST)
 
-        # Confirm form is valid 
+        # Confirm form is valid
         if expenseform.is_valid():
             # create an expense object and save it to the db
             expense = Expense(
-                amount = expenseform.cleaned_data['amount'], 
-                description = expenseform.cleaned_data['description'],
-                date = expenseform.cleaned_data['date'],
+                amount=expenseform.cleaned_data['amount'],
+                description=expenseform.cleaned_data['description'],
+                date=expenseform.cleaned_data['date'],
                 project_id=id,
             )
             expense.save()
 
             return redirect('project', id=id)
-        else: 
+        else:
             expenseform = ExpenseForm()
 
             # get all expenses for the project
@@ -136,27 +132,27 @@ def project(request, id):
 
             # Calculate sum of all expenses for project
             total_expenses = sum([expense.amount for expense in expenses])
-        
-        # Form to add time to the project 
+
+        # Form to add time to the project
         timeform = TimeForm(request.POST)
 
-        # confirm that the form is valid and clean the start, end, and project inputs 
+        # confirm form is valid and clean the inputs
         if timeform.is_valid():
             time_model = TimeModel(
                 start_time=timeform.cleaned_data['start_time'],
                 end_time=timeform.cleaned_data['end_time'],
-                project_id=id, 
+                project_id=id,
             )
             time_model.save()
 
             return redirect('project', id=id)
 
-        else: 
-            # Print errors when it doesn't work 
+        else:
+            # Print errors when it doesn't work
             print(timeform.errors)
             timeform = TimeForm()
-            #display error message 
-    
+            # display error message
+
     tasks_todo = ProjectTask.objects.filter(project=project, status=ProjectTask.TODO)
     tasks_complete = ProjectTask.objects.filter(project=project, status=ProjectTask.COMPLETE)
     tasks_canceled = ProjectTask.objects.filter(project=project, status=ProjectTask.CANCELED)
@@ -164,38 +160,41 @@ def project(request, id):
     elapsed_time = Decimal(elapsed_time)
     project_total = elapsed_time * 200 + total_expenses
 
-
     return render(request, "track/project.html", {
-        "projects": projects, 
-        "id": id, 
-        "tasks_todo": tasks_todo, 
-        "tasks_complete": tasks_complete, 
+        "projects": projects,
+        "id": id,
+        "tasks_todo": tasks_todo,
+        "tasks_complete": tasks_complete,
         "tasks_canceled": tasks_canceled,
         "form": form,
-        "timeform": timeform, 
-        "project": project, 
+        "timeform": timeform,
+        "project": project,
         "time_models": time_models,
         "elapsed_time": elapsed_time,
-        "tasks": tasks, 
+        "tasks": tasks,
         "expenseform": expenseform,
         "expenses": expenses,
         "total_expenses": total_expenses,
         "project_total": project_total,
-        "task": task, 
+        "task": task,
     })
+
 
 def toggle_project_status(request, id):
     project = Project.objects.get(id=id)
     project.toggle_status()
     return redirect("project", id=id)
 
+
 def view_tasks(request):
     tasks = ProjectTask.objects.all()
     return render(request, 'track/tasks.html', {'tasks': tasks})
 
-def view_task(request, pk): 
+
+def view_task(request, pk):
     task = ProjectTask.objects.get(pk=pk)
     return render(request, "tasks/task.html", {"task": task})
+
 
 def update_task(request, pk):
     task = ProjectTask.objects.get(pk=pk)
@@ -210,17 +209,19 @@ def update_task(request, pk):
 
     return render(request, 'track/update_task.html', {'form': form})
 
+
 def update_time(request):
     # get instance to update
     time_model = TimeModel.objects.get(id=1)
 
-    # update start and end fields 
+    # update start and end fields
     time_model.start_time = request.POST['start_time']
     time_model.end_time = request.POST['end_time']
 
-    # save 
+    # save
     time_model.save()
     return HttpResponseRedirect(reverse('projects'))
+
 
 def invoice(request, project_id):
     projects = Project.objects.filter(id=project_id)
@@ -232,24 +233,25 @@ def invoice(request, project_id):
     project_total = elapsed_time * 200 + total_expenses
     tasks_complete = ProjectTask.objects.filter(project=project, status=ProjectTask.COMPLETE)
 
-
     return render(request, "track/invoice.html", {
-        "projects": projects, 
-        "elapsed_time": elapsed_time, 
-        "expenses": expenses, 
+        "projects": projects,
+        "elapsed_time": elapsed_time,
+        "expenses": expenses,
         "total_expenses": total_expenses,
         "project_total": project_total,
         "tasks_complete": tasks_complete,
         })
 
+
 def invoices_list(request):
     projects = Project.objects.all()
 
     return render(request, "track/invoices_list.html", {
-        "projects": projects, 
+        "projects": projects,
         })
 
-# Everything below this adapted from previous assignments 
+
+# Everything below this adapted from previous assignments
 def login_view(request):
     if request.method == 'POST':
 
