@@ -13,21 +13,23 @@ from .models import Expense, Project, ProjectTask, TimeModel, User
 
 
 def index(request):
+    # Render the home page 
     return render(request, "track/index.html")
 
 
 def project_list(request):
+    # Render the projects page with the users projects 
     return render(request, "track/projects.html", {
             "projects": request.user.project_list.all(),
         })
 
 
 def create_task(request):
+    # Handle form submission to create a new task
     if request.method == "POST":
         form = AddTaskForm(request.POST)
         # Check that the form is valid before proceeding
         if form.is_valid():
-
             # Get user info so it's stored with the listing
             proj = form.save(commit=False)
             proj.projects = request.user
@@ -76,6 +78,7 @@ def create_project(request):
 
 
 class edit_project(UpdateView):
+    # Define model and specify template to render
     model = Project
     template_name = "track/edit_project.html"
     fields = ['name', 'budget_hours', 'budget_dollars', ]
@@ -93,6 +96,8 @@ def project(request, id):
     tasks = ProjectTask.objects.filter(project=project)
     expenseform = ExpenseForm(initial={'project': project})
     expenses = Expense.objects.filter(project=project)
+    
+    # Calc total expenses by summing all expenses
     total_expenses = sum([expense.amount for expense in expenses])
     task = ProjectTask.objects.get(pk=id)
 
